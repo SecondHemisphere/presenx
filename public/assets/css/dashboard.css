@@ -1,0 +1,136 @@
+
+.contenido-dashboard{
+    padding: 1rem;
+}
+
+/* Cabecera */
+.cabecera-superior {
+    margin-bottom: 2rem;
+}
+
+.cabecera-superior h1 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.cabecera-superior p {
+    font-size: 1.8rem;
+    color: #7f8c8d;
+}
+
+/* Estadísticas */
+.estadisticas-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.tarjeta-estadistica {
+    background-color: #f9f9f9;
+    border-radius: 0.8rem;
+    padding: 1.5rem 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border-left: 5px solid;
+}
+
+/* Colores para los bordes izquierdos */
+.tarjeta-estadistica:nth-child(1) { border-left-color: #3498db; } /* Usuarios */
+.tarjeta-estadistica:nth-child(2) { border-left-color: #2ecc71; } /* Libros */
+.tarjeta-estadistica:nth-child(3) { border-left-color: #9b59b6; } /* Autor */
+.tarjeta-estadistica:nth-child(4) { border-left-color: #f39c12; } /* Editorial */
+.tarjeta-estadistica:nth-child(5) { border-left-color: #34495e; } /* Estudiantes */
+.tarjeta-estadistica:nth-child(6) { border-left-color: #e74c3c; } /* Préstamos */
+.tarjeta-estadistica:nth-child(7) { border-left-color: #1abc9c; } /* Materias */
+
+.tarjeta-estadistica h3 {
+    font-size: 1.2rem;
+    color: black;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+
+.tarjeta-estadistica p {
+    font-size: 2rem;
+    font-weight: 500;
+    color: black;
+    margin: 0;
+}
+
+.tarjeta-estadistica i {
+    font-size: 2.5rem;
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.1);
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    border-radius: 50%;
+    margin: 0 auto 1rem auto;
+    display: block;
+}
+
+/* Colores de fondo para los iconos */
+.tarjeta-estadistica:nth-child(1) i { background-color: #3498db; }
+.tarjeta-estadistica:nth-child(2) i { background-color: #2ecc71; }
+.tarjeta-estadistica:nth-child(3) i { background-color: #9b59b6; }
+.tarjeta-estadistica:nth-child(4) i { background-color: #f39c12; }
+.tarjeta-estadistica:nth-child(5) i { background-color: #34495e; }
+.tarjeta-estadistica:nth-child(6) i { background-color: #e74c3c; }
+.tarjeta-estadistica:nth-child(7) i { background-color: #1abc9c; }
+
+/* Gráfico de libros disponibles */
+.grafico-container {
+    background-color: #E6F2FF;
+    border-radius: 0.8rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 30rem;
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.grafico-titulo {
+    font-size: 1.5rem;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.barra-container {
+    height: 15rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.barra {
+    width: 5rem;
+    background-color: #3498db;
+    border-radius: 5px 5px 0 0;
+    position: relative;
+    transition: height 0.5s ease;
+}
+
+.barra-valor {
+    position: absolute;
+    top: -3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.barra-etiqueta {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    color: #7f8c8d;
+    text-transform: uppercase;
+}
