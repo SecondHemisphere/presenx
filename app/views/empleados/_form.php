@@ -106,11 +106,12 @@
             <?php endif; ?>
         </div>
 
+        <!-- Campo: Estado del estudiante (activo/inactivo) -->
         <div class="campo">
             <label for="estado">Estado</label>
-            <select name="estado" id="estado">
-                <option value="activo" <?= ($empleado->estado ?? '') === 'activo' ? 'selected' : '' ?>>Activo</option>
-                <option value="inactivo" <?= ($empleado->estado ?? '') === 'inactivo' ? 'selected' : '' ?>>Inactivo</option>
+            <select name="estado" id="estado" required>
+                <option value="1" <?= (isset($empleado->estado) && $empleado->estado == 1) ? 'selected' : '' ?>>Activo</option>
+                <option value="0" <?= (isset($empleado->estado) && $empleado->estado == 0) ? 'selected' : '' ?>>Inactivo</option>
             </select>
         </div>
     </div>
@@ -134,7 +135,7 @@
             <div id="preview-container" style="display: none; margin-top: 10px;">
                 <p>Vista previa:</p>
                 <img id="preview-image" src="#" alt="Vista previa de la imagen"
-                     style="max-width: 200px; border: 1px solid #ccc; padding: 4px;">
+                    style="max-width: 200px; border: 1px solid #ccc; padding: 4px;">
             </div>
         </div>
     </div>
