@@ -124,16 +124,26 @@
             <?php if (!empty($empleado->foto)): ?>
                 <div class="foto-actual-display">
                     <p>Foto actual:</p>
-                    <img src="<?php echo htmlspecialchars($empleado->foto); ?>"
+                    <img src="/uploads/<?= htmlspecialchars($empleado->foto) ?>"
                         alt="Foto del empleado"
                         class="foto-empleado-preview">
                 </div>
             <?php endif; ?>
+
+            <!-- Contenedor para vista previa -->
+            <div id="preview-container" style="display: none; margin-top: 10px;">
+                <p>Vista previa:</p>
+                <img id="preview-image" src="#" alt="Vista previa de la imagen"
+                     style="max-width: 200px; border: 1px solid #ccc; padding: 4px;">
+            </div>
         </div>
     </div>
+
     <!-- Botones -->
     <div class="contenedor-botones">
         <a href="/empleados" class="boton boton-cancelar">Cancelar</a>
         <button type="submit" class="boton boton-registrar">Guardar</button>
     </div>
 </form>
+
+<script src="/assets/js/vista-previa-imagen.js"></script>

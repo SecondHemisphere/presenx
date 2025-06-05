@@ -37,18 +37,18 @@
                                 case 'imagen':
                                     if (!empty($valor)) {
                                         echo '<div class="contenedor-imagen-tabla">
-                                                <img src="' . htmlspecialchars($valor) . '"
-                                                     alt="' . htmlspecialchars($fila->nombre ?? $fila->nombres ?? '') . '">
-                                            </div>';
+                <img src="/uploads/' . htmlspecialchars($valor) . '"
+                     alt="' . htmlspecialchars($fila->nombre ?? $fila->nombres ?? '') . '">
+              </div>';
                                     } else {
                                         echo '<div class="imagen-placeholder">
-                                                <svg viewBox="0 0 24 24">
-                                                    <path fill="currentColor" d="M8.5,13.5L11,16.5L14.5,12L19,18H5M21,19V5C21,3.89 20.1,3 19,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19Z" />
-                                                </svg>
-                                            </div>';
+                <svg viewBox="0 0 24 24">
+                    <path fill="currentColor"
+                          d="M8.5,13.5L11,16.5L14.5,12L19,18H5M21,19V5C21,3.89 20.1,3 19,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19Z" />
+                </svg>
+              </div>';
                                     }
                                     break;
-
                                 case 'estado':
                                     $clase = $valor ? 'activo' : 'inactivo';
                                     $texto = $valor ? 'Activo' : 'Inactivo';

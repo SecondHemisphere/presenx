@@ -45,6 +45,10 @@ class Empleado
             VALUES
             (:nombre, :apellido, :cedula, :genero, :fecha_nacimiento, :email, :telefono, :direccion, :fecha_ingreso, :id_cargo, :id_empresa, :estado, :foto)
         ");
+
+        $datos['fecha_nacimiento'] = !empty($datos['fecha_nacimiento']) ? $datos['fecha_nacimiento'] : null;
+        $datos['fecha_ingreso'] = !empty($datos['fecha_ingreso']) ? $datos['fecha_ingreso'] : null;
+
         $this->db->bind(':nombre', $datos['nombre']);
         $this->db->bind(':apellido', $datos['apellido']);
         $this->db->bind(':cedula', $datos['cedula']);
@@ -102,6 +106,10 @@ class Empleado
                 foto = :foto
             WHERE id = :id
         ");
+
+        $datos['fecha_nacimiento'] = !empty($datos['fecha_nacimiento']) ? $datos['fecha_nacimiento'] : null;
+        $datos['fecha_ingreso'] = !empty($datos['fecha_ingreso']) ? $datos['fecha_ingreso'] : null;
+
         $this->db->bind(':nombre', $datos['nombre']);
         $this->db->bind(':apellido', $datos['apellido']);
         $this->db->bind(':cedula', $datos['cedula']);
