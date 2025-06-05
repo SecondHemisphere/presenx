@@ -20,6 +20,10 @@ $routeMap = [
     '/cargos' => ['CargoController', 'index'],
     '/cargos/create' => ['CargoController', 'create'],
     '/cargos/store' => ['CargoController', 'store'],
+
+    '/empleados' => ['EmpleadoController', 'index'],
+    '/empleados/create' => ['EmpleadoController', 'create'],
+    '/empleados/store' => ['EmpleadoController', 'store'],
 ];
 
 // Soporte para rutas dinámicas
@@ -35,6 +39,18 @@ if (array_key_exists($path, $routeMap)) {
     $_GET['id'] = $matches[1];
 } elseif (preg_match('#^/cargos/delete/(\d+)$#', $path, $matches)) {
     $controllerName = 'CargoController';
+    $method = 'delete';
+    $_GET['id'] = $matches[1];
+} elseif (preg_match('#^/empleados/edit/(\d+)$#', $path, $matches)) {
+    $controllerName = 'EmpleadoController';
+    $method = 'edit';
+    $_GET['id'] = $matches[1];
+} elseif (preg_match('#^/empleados/update/(\d+)$#', $path, $matches)) {
+    $controllerName = 'EmpleadoController';
+    $method = 'update';
+    $_GET['id'] = $matches[1];
+} elseif (preg_match('#^/empleados/delete/(\d+)$#', $path, $matches)) {
+    $controllerName = 'EmpleadoController';
     $method = 'delete';
     $_GET['id'] = $matches[1];
 } else {
@@ -56,9 +72,7 @@ if (file_exists($controllerFile)) {
     } else {
         $controller->$method($_SERVER['REQUEST_METHOD'] === 'POST' ? $_POST : []);
     }
-
 } else {
     http_response_code(500);
     die('Controlador no encontrado');
 }
-?>

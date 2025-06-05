@@ -4,8 +4,8 @@
     <nav class="navbar-sistema">
         <!-- Logo -->
         <div class="logo">
-            <i class="fas fa-book-open"></i>
-            <span>Biblioteca Virtual</span>
+            <i class="fas fa-calendar-check"></i>
+            <span>Presenx</span>
         </div>
         <div class="nav-links">
             <a href="/dashboard">

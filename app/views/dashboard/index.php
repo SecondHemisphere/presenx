@@ -11,34 +11,9 @@
             <p>?</p>
         </div>
         <div class="tarjeta-estadistica">
-            <i class="fas fa-user-tie"></i>
+            <i class="fas fa-sitemap"></i>
             <h3>Cargos</h3>
-            <p>?</p>
-        </div>
-        <div class="tarjeta-estadistica">
-            <i class="fas fa-feather-alt"></i>
-            <h3>Autor</h3>
-            <p>?</p>
-        </div>
-        <div class="tarjeta-estadistica">
-            <i class="fas fa-building"></i>
-            <h3>Editorial</h3>
-            <p><?= $data['total_editoriales'] ?></p>
-        </div>
-        <div class="tarjeta-estadistica">
-            <i class="fas fa-user-graduate"></i>
-            <h3>Estudiantes</h3>
-            <p><?= $data['total_estudiantes'] ?></p>
-        </div>
-        <div class="tarjeta-estadistica">
-            <i class="fas fa-book-reader"></i>
-            <h3>Préstamos</h3>
-            <p>?</p>
-        </div>
-        <div class="tarjeta-estadistica">
-            <i class="fas fa-chalkboard-teacher"></i>
-            <h3>Materias</h3>
-            <p><?= $data['total_materias'] ?></p>
+            <p><?php echo($total_cargos) ?></p>
         </div>
     </div>
     

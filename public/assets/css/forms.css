@@ -84,11 +84,58 @@
   font-size: 1.4rem;
 }
 
+.formulario .campo input[type="email"] {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 0.1rem solid #ddd;
+  border-radius: 0.6rem;
+  background-color: #f9f9f9;
+  transition: all 0.3s;
+  font-size: 1.4rem;
+}
+
 .formulario .campo input[type="date"]:focus {
   outline: none;
   border-color: #3498db;
   box-shadow: 0 0 0 0.3rem rgba(52, 152, 219, 0.2);
   background-color: #fff;
+}
+
+.formulario .campo img {
+  border-radius: 0.4rem;
+  font-size: 1.6rem;
+  margin-top: 0.5rem;
+}
+
+.campo input[type="file"]::-webkit-file-upload-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* --- Styling for the Currently Displayed Photo --- */
+.foto-actual-display {
+    margin-top: 20px; /* Space above the photo display area */
+    padding-top: 15px;
+    border-top: 1px dashed #e0e0e0; /* Dashed line separator */
+    display: flex; /* Use flexbox for alignment */
+    align-items: center; /* Vertically align items */
+    gap: 15px; /* Space between text and image */
+}
+
+.foto-actual-display p {
+    font-size: 0.9em;
+    color: #666;
+    margin: 0; /* Remove default paragraph margin */
+    white-space: nowrap; /* Prevent "Foto actual:" from wrapping */
+}
+
+.foto-empleado-preview {
+    max-width: 120px; /* Adjust this size as needed for your layout */
+    height: auto; /* Maintain aspect ratio */
+    border: 1px solid #ddd;
+    border-radius: 6px; /* Slightly rounded corners for the image */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Soft shadow for depth */
+    object-fit: cover; /* Ensures the image covers the area, cropping if necessary */
+    display: block; /* Removes extra space below the image */
 }
 
 .formulario .campo textarea {

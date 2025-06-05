@@ -4,7 +4,7 @@
     <div class="grupo-campos">
         <!-- Campo: Nombre -->
         <div class="campo campo-ancho <?= isset($errors['nombre']) ? 'error-input' : '' ?>">
-            <label for="nombre">Nombre</label>
+            <label for="nombre">Nombre*</label>
             <input type="text" name="nombre" id="nombre"
                 value="<?= htmlspecialchars($cargo->nombre ?? '') ?>" required>
             <?php if (isset($errors['nombre'])): ?>
