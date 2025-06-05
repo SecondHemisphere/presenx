@@ -3,30 +3,17 @@ class Cargo
 {
     private $db;
 
-    /**
-     * Constructor de la clase Cargo.
-     * @param Database $db Instancia de la conexión a la base de datos.
-     */
     public function __construct($db)
     {
         $this->db = $db;
     }
 
-    /**
-     * Obtener todos los cargos.
-     * @return array Lista de cargos.
-     */
     public function obtenerTodos()
     {
         $this->db->query('SELECT * FROM cargos ORDER BY id DESC');
         return $this->db->resultSet();
     }
 
-    /**
-     * Obtener un cargo por su ID.
-     * @param int $id ID del cargo.
-     * @return object|false Objeto cargo o false si no existe.
-     */
     public function obtenerPorId($id)
     {
         $this->db->query('SELECT * FROM cargos WHERE id = :id');
@@ -34,16 +21,16 @@ class Cargo
         return $this->db->single();
     }
 
-    /**
-     * Registrar un nuevo cargo.
-     * @param array $datos Datos del cargo.
-     * @return array Resultado de la operación.
-     */
     public function registrar($datos)
     {
         $validacion = $this->validarDatos($datos);
         if ($validacion !== true) {
             return ['exito' => false, 'errores' => $validacion];
+        }
+
+        // Verificar si el nombre ya existe
+        if ($this->existePorNombre($datos['nombre'])) {
+            return ['exito' => false, 'errores' => ['nombre' => 'Ya existe un cargo con ese nombre.']];
         }
 
         $this->db->query('INSERT INTO cargos (nombre, descripcion) VALUES (:nombre, :descripcion)');
@@ -57,12 +44,6 @@ class Cargo
         ];
     }
 
-    /**
-     * Actualizar un cargo existente.
-     * @param int $id ID del cargo.
-     * @param array $datos Datos actualizados.
-     * @return array Resultado de la operación.
-     */
     public function actualizar($id, $datos)
     {
         $cargo = $this->obtenerPorId($id);
@@ -75,6 +56,11 @@ class Cargo
             return ['exito' => false, 'errores' => $validacion];
         }
 
+        // Verificar si el nombre ya existe en otro cargo
+        if ($this->existePorNombre($datos['nombre'], $id)) {
+            return ['exito' => false, 'errores' => ['nombre' => 'Ya existe otro cargo con ese nombre.']];
+        }
+
         $this->db->query('UPDATE cargos SET nombre = :nombre, descripcion = :descripcion WHERE id = :id');
         $this->db->bind(':nombre', $datos['nombre']);
         $this->db->bind(':descripcion', $datos['descripcion']);
@@ -84,11 +70,6 @@ class Cargo
         return ['exito' => $exito];
     }
 
-    /**
-     * Eliminar un cargo por su ID.
-     * @param int $id ID del cargo.
-     * @return bool True si se eliminó correctamente.
-     */
     public function eliminar($id)
     {
         $this->db->query('DELETE FROM cargos WHERE id = :id');
@@ -96,11 +77,6 @@ class Cargo
         return $this->db->execute();
     }
 
-    /**
-     * Validar los datos de un cargo.
-     * @param array $datos Datos a validar.
-     * @return array|true Lista de errores o true si es válido.
-     */
     public function validarDatos($datos)
     {
         $errores = [];
@@ -120,20 +96,27 @@ class Cargo
 
     /**
      * Verificar si ya existe un cargo con el mismo nombre.
+     * Si se pasa un ID, se excluye ese ID de la verificación (para actualizar).
      * @param string $nombre Nombre del cargo.
-     * @return bool True si existe, False si no.
+     * @param int|null $excluirId ID a excluir de la verificación (opcional).
+     * @return bool
      */
-    public function existePorNombre($nombre)
+    public function existePorNombre($nombre, $excluirId = null)
     {
-        $this->db->query('SELECT * FROM cargos WHERE nombre = :nombre');
+        $query = 'SELECT * FROM cargos WHERE nombre = :nombre';
+        if ($excluirId !== null) {
+            $query .= ' AND id != :id';
+        }
+
+        $this->db->query($query);
         $this->db->bind(':nombre', $nombre);
+        if ($excluirId !== null) {
+            $this->db->bind(':id', $excluirId);
+        }
+
         return $this->db->single() !== false;
     }
 
-    /**
-     * Obtener el total de cargos registrados.
-     * @return int Total de cargos.
-     */
     public function obtenerTotal()
     {
         $this->db->query('SELECT COUNT(*) as total FROM cargos');
