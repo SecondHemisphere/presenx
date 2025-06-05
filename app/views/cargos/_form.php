@@ -1,4 +1,4 @@
-<!-- Formulario para crear o editar un estudiante -->
+<!-- Formulario para crear o editar un cargo -->
 <form action="<?= $form_action ?>" method="POST" novalidate>
     <!-- Grupo 1: Datos de identificación -->
     <div class="grupo-campos">

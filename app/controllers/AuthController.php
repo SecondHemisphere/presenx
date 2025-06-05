@@ -20,7 +20,7 @@ class AuthController
 
         $esLogin = true;
         $view = __DIR__ . '/../views/auth/login.php';
-        require_once __DIR__ . '/../views/layouts/layout.php';
+        require_once __DIR__ . '/../views/include/layout.php';
     }
 
     public function showRegister()
@@ -32,7 +32,7 @@ class AuthController
 
         $esLogin = true;
         $view = __DIR__ . '/../views/auth/register.php';
-        require_once __DIR__ . '/../views/layouts/layout.php';
+        require_once __DIR__ . '/../views/include/layout.php';
     }
 
     public function login($data)

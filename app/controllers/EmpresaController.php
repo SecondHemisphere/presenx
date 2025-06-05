@@ -30,7 +30,7 @@ class EmpresaController
         unset($_SESSION['success_message'], $_SESSION['error_message']);
 
         $view = __DIR__ . '/../views/empresas/index.php';
-        require_once __DIR__ . '/../views/layouts/layout.php';
+        require_once __DIR__ . '/../views/include/layout.php';
     }
 
     public function create()
@@ -44,7 +44,7 @@ class EmpresaController
         ];
 
         $view = __DIR__ . '/../views/empresas/create.php';
-        require_once __DIR__ . '/../views/layouts/layout.php';
+        require_once __DIR__ . '/../views/include/layout.php';
     }
 
     public function store()
@@ -68,7 +68,7 @@ class EmpresaController
                 ];
 
                 $view = __DIR__ . '/../views/empresas/create.php';
-                require_once __DIR__ . '/../views/layouts/layout.php';
+                require_once __DIR__ . '/../views/include/layout.php';
             }
         }
     }
@@ -92,7 +92,7 @@ class EmpresaController
         ];
 
         $view = __DIR__ . '/../views/empresas/edit.php';
-        require_once __DIR__ . '/../views/layouts/layout.php';
+        require_once __DIR__ . '/../views/include/layout.php';
     }
 
     public function update($id)
@@ -118,7 +118,7 @@ class EmpresaController
                 ];
 
                 $view = __DIR__ . '/../views/empresas/edit.php';
-                require_once __DIR__ . '/../views/layouts/layout.php';
+                require_once __DIR__ . '/../views/include/layout.php';
             }
         }
     }

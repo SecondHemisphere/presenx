@@ -34,7 +34,7 @@ class EmpleadoController
         unset($_SESSION['success_message'], $_SESSION['error_message']);
 
         $view = __DIR__ . '/../views/empleados/index.php';
-        require_once __DIR__ . '/../views/layouts/layout.php';
+        require_once __DIR__ . '/../views/include/layout.php';
     }
 
     public function create()
@@ -53,7 +53,7 @@ class EmpleadoController
         ];
 
         $view = __DIR__ . '/../views/empleados/create.php';
-        require_once __DIR__ . '/../views/layouts/layout.php';
+        require_once __DIR__ . '/../views/include/layout.php';
     }
 
     public function store()
@@ -78,7 +78,7 @@ class EmpleadoController
                 ];
 
                 $view = __DIR__ . '/../views/empleados/create.php';
-                require_once __DIR__ . '/../views/layouts/layout.php';
+                require_once __DIR__ . '/../views/include/layout.php';
             }
         }
     }
@@ -107,7 +107,7 @@ class EmpleadoController
         ];
 
         $view = __DIR__ . '/../views/empleados/edit.php';
-        require_once __DIR__ . '/../views/layouts/layout.php';
+        require_once __DIR__ . '/../views/include/layout.php';
     }
 
     public function update($id)
@@ -134,7 +134,7 @@ class EmpleadoController
                 ];
 
                 $view = __DIR__ . '/../views/empleados/edit.php';
-                require_once __DIR__ . '/../views/layouts/layout.php';
+                require_once __DIR__ . '/../views/include/layout.php';
             }
         }
     }

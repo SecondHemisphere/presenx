@@ -94,6 +94,17 @@
   font-size: 1.4rem;
 }
 
+.formulario .campo input[type="time"] {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 0.1rem solid #ddd;
+  border-radius: 0.6rem;
+  background-color: #f9f9f9;
+  transition: all 0.3s;
+  font-size: 1.4rem;
+}
+
+
 .formulario .campo input[type="date"]:focus {
   outline: none;
   border-color: #3498db;
@@ -107,7 +118,7 @@
   margin-top: 0.5rem;
 }
 
-.campo input[type="file"]::-webkit-file-upload-button:hover {
+.formulario .campo input[type="file"]::-webkit-file-upload-button:hover {
     background-color: #0056b3; /* Darker blue on hover */
 }
 

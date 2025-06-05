@@ -33,7 +33,7 @@ class CargoController
         unset($_SESSION['error_message']);
 
         $view = __DIR__ . '/../views/cargos/index.php';
-        require_once __DIR__ . '/../views/layouts/layout.php';
+        require_once __DIR__ . '/../views/include/layout.php';
     }
 
     // Muestra el formulario para registrar un nuevo cargo
@@ -48,7 +48,7 @@ class CargoController
         ];
 
         $view = __DIR__ . '/../views/cargos/create.php';
-        require_once __DIR__ . '/../views/layouts/layout.php';
+        require_once __DIR__ . '/../views/include/layout.php';
     }
 
     // Procesa el formulario de registro de cargo
@@ -76,7 +76,7 @@ class CargoController
                 ];
 
                 $view = __DIR__ . '/../views/cargos/create.php';
-                require_once __DIR__ . '/../views/layouts/layout.php';
+                require_once __DIR__ . '/../views/include/layout.php';
             }
         }
     }
@@ -101,7 +101,7 @@ class CargoController
         ];
 
         $view = __DIR__ . '/../views/cargos/edit.php';
-        require_once __DIR__ . '/../views/layouts/layout.php';
+        require_once __DIR__ . '/../views/include/layout.php';
     }
 
     // Procesa la actualización de un cargo
@@ -131,7 +131,7 @@ class CargoController
                 ];
 
                 $view = __DIR__ . '/../views/cargos/edit.php';
-                require_once __DIR__ . '/../views/layouts/layout.php';
+                require_once __DIR__ . '/../views/include/layout.php';
             }
         }
     }

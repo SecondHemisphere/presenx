@@ -37,7 +37,7 @@ class DashboardController
 
         // Carga la vista del dashboard dentro del layout general
         $view = __DIR__ . '/../views/dashboard/index.php';
-        require_once __DIR__ . '/../views/layouts/layout.php';
+        require_once __DIR__ . '/../views/include/layout.php';
     }
 
     // Verifica si el usuario ha iniciado sesión

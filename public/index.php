@@ -24,6 +24,10 @@ $routeMap = [
     '/empleados' => ['EmpleadoController', 'index'],
     '/empleados/create' => ['EmpleadoController', 'create'],
     '/empleados/store' => ['EmpleadoController', 'store'],
+
+    '/asistencias' => ['AsistenciaController', 'index'],
+    '/asistencias/create' => ['AsistenciaController', 'create'],
+    '/asistencias/store' => ['AsistenciaController', 'store'],
 ];
 
 // Soporte para rutas dinámicas
@@ -53,6 +57,18 @@ if (array_key_exists($path, $routeMap)) {
     $controllerName = 'EmpleadoController';
     $method = 'delete';
     $_GET['id'] = $matches[1];
+} elseif (preg_match('#^/asistencias/edit/(\d+)$#', $path, $matches)) {
+    $controllerName = 'AsistenciaController';
+    $method = 'edit';
+    $_GET['id'] = $matches[1];
+} elseif (preg_match('#^/asistencias/update/(\d+)$#', $path, $matches)) {
+    $controllerName = 'AsistenciaController';
+    $method = 'update';
+    $_GET['id'] = $matches[1];
+} elseif (preg_match('#^/asistencias/delete/(\d+)$#', $path, $matches)) {
+    $controllerName = 'AsistenciaController';
+    $method = 'delete';
+    $_GET['id'] = $matches[1];
 } else {
     http_response_code(404);
     echo '404 Not Found';
@@ -65,7 +81,7 @@ if (file_exists($controllerFile)) {
     require_once $controllerFile;
     $controller = new $controllerName($db);
 
-    require_once __DIR__ . '/../app/views/layouts/head.php';
+    require_once __DIR__ . '/../app/views/include/head.php';
 
     if (isset($_GET['id'])) {
         $controller->$method($_GET['id']);

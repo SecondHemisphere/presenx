@@ -31,6 +31,13 @@
                     <span>Empleados</span>
                 </a>
             </li>
+            <!-- Asistencias -->
+            <li class="<?php echo ($current_page == 'asistencias') ? 'active' : '' ?>">
+                <a href="/asistencias">
+                    <i class="fas fa-user-tie"></i>
+                    <span>Asistencias</span>
+                </a>
+            </li>
         </ul>
     </nav>
 </aside>
