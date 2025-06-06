@@ -1,0 +1,87 @@
+.contenedor-empresa {
+  background-color: #ffffff;
+  padding: 1rem;
+  border-radius: 14px;
+}
+
+.contenedor-empresa .encabezado-configuracion h2 {
+  font-size: 2rem;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+.contenedor-empresa .encabezado-configuracion .subtitulo {
+  font-size: 1.6rem;
+  color: #7f8c8d;
+}
+
+.contenedor-empresa .encabezado-configuracion hr {
+  border: none;
+  border-top: 0.2rem solid #ddd;
+  margin-bottom: 2rem;
+}
+
+.contenedor-empresa .formulario-empresa label {
+  font-weight: 600;
+  font-size: 1.6rem;
+}
+
+.contenedor-empresa .formulario-empresa input {
+  padding: 0.6rem;
+  border: 1px solid #bbb;
+  border-radius: 8px;
+  width: 100%;
+}
+
+.contenedor-empresa .formulario-empresa .grupo-campos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.contenedor-empresa .formulario-empresa .campo {
+  flex: 1;
+  min-width: 280px;
+}
+
+.contenedor-empresa .formulario-empresa .error {
+  color: #d9534f;
+  font-size: 1.4rem;
+}
+
+.contenedor-empresa .contenedor-botones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.contenedor-empresa .boton {
+  padding: 0.7rem 1.4rem;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.contenedor-empresa .boton-registrar {
+  background-color: var(--color-secundario);
+  color: #fff;
+  border: none;
+}
+
+.contenedor-empresa .boton-cancelar {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+}
+
+.contenedor-empresa .boton-editar {
+  background-color: var(--color-primario);
+  color: #fff;
+  border: none;
+}

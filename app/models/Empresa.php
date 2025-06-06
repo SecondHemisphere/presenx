@@ -85,8 +85,12 @@ class Empresa
         }
 
         // Teléfono
-        if (!empty($datos['telefono']) && mb_strlen($datos['telefono']) > 20) {
-            $errores['telefono'] = 'El teléfono no debe exceder 20 caracteres.';
+        if (!empty($datos['telefono'])) {
+            if (!preg_match('/^[\d\s\-\+\(\)]+$/', $datos['telefono'])) {
+                $errores['telefono'] = 'El teléfono contiene caracteres no válidos.';
+            } elseif (mb_strlen($datos['telefono']) > 20) {
+                $errores['telefono'] = 'El teléfono no debe exceder 20 caracteres.';
+            }
         }
 
         // Email
