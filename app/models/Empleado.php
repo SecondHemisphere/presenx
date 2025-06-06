@@ -11,10 +11,9 @@ class Empleado
     public function obtenerTodos()
     {
         $this->db->query("
-            SELECT e.*, c.nombre AS nombre_cargo, em.nombre AS nombre_empresa
+            SELECT e.*, c.nombre AS nombre_cargo
             FROM empleados e
             JOIN cargos c ON e.id_cargo = c.id
-            JOIN empresas em ON e.id_empresa = em.id
             ORDER BY e.id DESC
         ");
         return $this->db->resultSet();
@@ -34,16 +33,15 @@ class Empleado
             return ['exito' => false, 'errores' => $validacion];
         }
 
-        // Verificar duplicado por cédula
         if ($this->existeCedula($datos['cedula'])) {
             return ['exito' => false, 'errores' => ['cedula' => 'La cédula ya está registrada.']];
         }
 
         $this->db->query("
             INSERT INTO empleados
-            (nombre, apellido, cedula, genero, fecha_nacimiento, email, telefono, direccion, fecha_ingreso, id_cargo, id_empresa, estado, foto)
+            (nombre, apellido, cedula, genero, fecha_nacimiento, email, telefono, direccion, fecha_ingreso, id_cargo, estado, foto)
             VALUES
-            (:nombre, :apellido, :cedula, :genero, :fecha_nacimiento, :email, :telefono, :direccion, :fecha_ingreso, :id_cargo, :id_empresa, :estado, :foto)
+            (:nombre, :apellido, :cedula, :genero, :fecha_nacimiento, :email, :telefono, :direccion, :fecha_ingreso, :id_cargo, :estado, :foto)
         ");
 
         $datos['fecha_nacimiento'] = !empty($datos['fecha_nacimiento']) ? $datos['fecha_nacimiento'] : null;
@@ -59,7 +57,6 @@ class Empleado
         $this->db->bind(':direccion', $datos['direccion']);
         $this->db->bind(':fecha_ingreso', $datos['fecha_ingreso']);
         $this->db->bind(':id_cargo', $datos['id_cargo']);
-        $this->db->bind(':id_empresa', $datos['id_empresa']);
         $this->db->bind(':estado', $datos['estado'] ?? 'activo');
 
         $foto = $this->subirFoto($_FILES['foto'] ?? null);
@@ -84,7 +81,6 @@ class Empleado
             return ['exito' => false, 'errores' => $validacion];
         }
 
-        // Verificar si la cédula ya existe en otro empleado
         if ($this->existeCedula($datos['cedula'], $id)) {
             return ['exito' => false, 'errores' => ['cedula' => 'Ya existe otro empleado con esa cédula.']];
         }
@@ -101,7 +97,6 @@ class Empleado
                 direccion = :direccion,
                 fecha_ingreso = :fecha_ingreso,
                 id_cargo = :id_cargo,
-                id_empresa = :id_empresa,
                 estado = :estado,
                 foto = :foto
             WHERE id = :id
@@ -120,7 +115,6 @@ class Empleado
         $this->db->bind(':direccion', $datos['direccion']);
         $this->db->bind(':fecha_ingreso', $datos['fecha_ingreso']);
         $this->db->bind(':id_cargo', $datos['id_cargo']);
-        $this->db->bind(':id_empresa', $datos['id_empresa']);
         $this->db->bind(':estado', $datos['estado']);
 
         $nuevaFoto = $this->subirFoto($_FILES['foto'] ?? null);
@@ -131,7 +125,6 @@ class Empleado
         }
 
         $this->db->bind(':foto', $fotoFinal);
-
         $this->db->bind(':id', $id);
 
         $exito = $this->db->execute();
@@ -187,11 +180,7 @@ class Empleado
         }
 
         if (empty($datos['id_cargo']) || !is_numeric($datos['id_cargo']) || !$this->existeCargo($datos['id_cargo'])) {
-            $errores['id_cargo'] = 'Seleccione un cargo.';
-        }
-
-        if (empty($datos['id_empresa']) || !is_numeric($datos['id_empresa']) || !$this->existeEmpresa($datos['id_empresa'])) {
-            $errores['id_empresa'] = 'Seleccione una empresa.';
+            $errores['id_cargo'] = 'Seleccione un cargo válido.';
         }
 
         return empty($errores) ? true : $errores;
@@ -203,14 +192,6 @@ class Empleado
         $this->db->bind(':id', $id);
         return $this->db->single() !== false;
     }
-
-    public function existeEmpresa($id)
-    {
-        $this->db->query("SELECT id FROM empresas WHERE id = :id");
-        $this->db->bind(':id', $id);
-        return $this->db->single() !== false;
-    }
-
 
     public function obtenerTotal()
     {

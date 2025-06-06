@@ -40,7 +40,6 @@ class EmpleadoController
     public function create()
     {
         $cargos = $this->cargoModel->obtenerTodos();
-        $empresas = $this->empresaModel->obtenerTodos();
 
         $data = [
             'title' => 'Registrar Nuevo Empleado',
@@ -49,7 +48,6 @@ class EmpleadoController
             'form_action' => '/empleados/store',
             'current_page' => 'empleados',
             'cargos' => $cargos,
-            'empresas' => $empresas
         ];
 
         $view = __DIR__ . '/../views/empleados/create.php';
@@ -88,7 +86,6 @@ class EmpleadoController
         $empleado = $this->empleadoModel->obtenerPorId($id);
 
         $cargos = $this->cargoModel->obtenerTodos();
-        $empresas = $this->empresaModel->obtenerTodos();
 
         if (!$empleado) {
             $_SESSION['error_message'] = 'Empleado no encontrado';
@@ -103,7 +100,6 @@ class EmpleadoController
             'form_action' => "/empleados/update/$id",
             'current_page' => 'empleados',
             'cargos' => $cargos,
-            'empresas' => $empresas
         ];
 
         $view = __DIR__ . '/../views/empleados/edit.php';

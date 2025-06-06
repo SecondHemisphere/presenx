@@ -28,6 +28,8 @@ $routeMap = [
     '/asistencias' => ['AsistenciaController', 'index'],
     '/asistencias/create' => ['AsistenciaController', 'create'],
     '/asistencias/store' => ['AsistenciaController', 'store'],
+    
+    '/empresa/configuracion' => ['EmpresaController', 'configuracion'],
 ];
 
 // Soporte para rutas dinámicas

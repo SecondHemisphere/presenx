@@ -91,21 +91,6 @@
             <?php endif; ?>
         </div>
 
-        <div class="campo <?= isset($errors['id_empresa']) ? 'error-input' : '' ?>">
-            <label for="id_empresa">Empresa*</label>
-            <select name="id_empresa" id="id_empresa" required>
-                <option value="">Seleccione una empresa</option>
-                <?php foreach ($empresas as $empresa): ?>
-                    <option value="<?= $empresa->id ?>" <?= ($empleado->id_empresa ?? '') == $empresa->id ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($empresa->nombre) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-            <?php if (isset($errors['id_empresa'])): ?>
-                <span class="error"><?= $errors['id_empresa'] ?></span>
-            <?php endif; ?>
-        </div>
-
         <!-- Campo: Estado del estudiante (activo/inactivo) -->
         <div class="campo">
             <label for="estado">Estado</label>

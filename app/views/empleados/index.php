@@ -55,7 +55,6 @@ $fin = min($total_registros, $pagina_actual * $por_pagina);
             ['campo' => 'direccion', 'titulo' => 'Dirección'],
             ['campo' => 'fecha_ingreso', 'titulo' => 'Fecha de Ingreso'],
             ['campo' => 'nombre_cargo', 'titulo' => 'Cargo'],
-            ['campo' => 'nombre_empresa', 'titulo' => 'Empresa'],
             ['campo' => 'estado', 'titulo' => 'Estado', 'tipo' => 'estado']
         ];
 

@@ -15,122 +15,51 @@ class EmpresaController
         }
     }
 
-    public function index()
+    public function configuracion()
     {
-        $empresas = $this->empresaModel->obtenerTodos();
-
-        $data = [
-            'title' => 'Listado de Empresas',
-            'empresas' => $empresas,
-            'success_message' => $_SESSION['success_message'] ?? null,
-            'error_message' => $_SESSION['error_message'] ?? null,
-            'current_page' => 'empresas'
-        ];
-
-        unset($_SESSION['success_message'], $_SESSION['error_message']);
-
-        $view = __DIR__ . '/../views/empresas/index.php';
-        require_once __DIR__ . '/../views/include/layout.php';
-    }
-
-    public function create()
-    {
-        $data = [
-            'title' => 'Registrar Nueva Empresa',
-            'empresa' => new stdClass(),
-            'errors' => [],
-            'form_action' => '/empresas/store',
-            'current_page' => 'empresas'
-        ];
-
-        $view = __DIR__ . '/../views/empresas/create.php';
-        require_once __DIR__ . '/../views/include/layout.php';
-    }
-
-    public function store()
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $inputData = $_POST;
-
-            $result = $this->empresaModel->registrar($inputData);
-
-            if ($result['exito']) {
-                $_SESSION['success_message'] = 'Empresa registrada correctamente';
-                header('Location: /empresas');
-                exit;
-            } else {
-                $data = [
-                    'title' => 'Registrar Nueva Empresa',
-                    'empresa' => (object) $inputData,
-                    'errors' => $result['errores'],
-                    'form_action' => '/empresas/store',
-                    'current_page' => 'empresas'
-                ];
-
-                $view = __DIR__ . '/../views/empresas/create.php';
-                require_once __DIR__ . '/../views/include/layout.php';
-            }
-        }
-    }
-
-    public function edit($id)
-    {
-        $empresa = $this->empresaModel->obtenerPorId($id);
-
+        $empresa = $this->empresaModel->obtenerPorId(1);
         if (!$empresa) {
-            $_SESSION['error_message'] = 'Empresa no encontrada';
-            header('Location: /empresas');
+            $_SESSION['error_message'] = 'Empresa no encontrada.';
+            header('Location: /dashboard');
             exit;
         }
 
+        $modo = isset($_GET['edit']) ? 'editar' : 'ver';
+        $errors = [];
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $datos = [
+                'nombre' => trim($_POST['nombre']),
+                'ruc' => trim($_POST['ruc']),
+                'telefono' => trim($_POST['telefono']),
+                'email' => trim($_POST['email']),
+                'ubicacion' => trim($_POST['ubicacion']),
+            ];
+
+            $resultado = $this->empresaModel->actualizar(1, $datos);
+
+            if ($resultado['exito']) {
+                $_SESSION['success_message'] = 'Datos actualizados correctamente.';
+                header('Location: /empresa/configuracion');
+                exit;
+            } else {
+                $errors = $resultado['errores'];
+                $empresa = (object) $datos;
+                $modo = 'editar';
+            }
+        }
+
         $data = [
-            'title' => 'Editar Empresa',
+            'title' => 'Configuración de Empresa',
             'empresa' => $empresa,
-            'errors' => [],
-            'form_action' => "/empresas/update/$id",
+            'errors' => $errors,
+            'modo' => $modo,
+            'form_action' => '/empresa/configuracion',
             'current_page' => 'empresas'
         ];
 
-        $view = __DIR__ . '/../views/empresas/edit.php';
+        $view = __DIR__ . '/../views/empresa/configuracion.php';
         require_once __DIR__ . '/../views/include/layout.php';
-    }
-
-    public function update($id)
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $inputData = $_POST;
-
-            $result = $this->empresaModel->actualizar($id, $inputData);
-
-            if ($result['exito']) {
-                $_SESSION['success_message'] = 'Empresa actualizada correctamente';
-                header('Location: /empresas');
-                exit;
-            } else {
-                $original = $this->empresaModel->obtenerPorId($id);
-
-                $data = [
-                    'title' => 'Editar Empresa',
-                    'empresa' => (object) array_merge((array) $original, $inputData),
-                    'errors' => $result['errores'],
-                    'form_action' => "/empresas/update/$id",
-                    'current_page' => 'empresas'
-                ];
-
-                $view = __DIR__ . '/../views/empresas/edit.php';
-                require_once __DIR__ . '/../views/include/layout.php';
-            }
-        }
-    }
-
-    public function delete($id)
-    {
-        $_SESSION['success_message'] = $this->empresaModel->eliminar($id)
-            ? 'Empresa eliminada correctamente'
-            : 'Error al eliminar la empresa';
-
-        header('Location: /empresas');
-        exit;
     }
 
     private function isLoggedIn()

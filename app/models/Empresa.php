@@ -8,12 +8,6 @@ class Empresa
         $this->db = $db;
     }
 
-    public function obtenerTodos()
-    {
-        $this->db->query("SELECT * FROM empresas ORDER BY id DESC");
-        return $this->db->resultSet();
-    }
-
     public function obtenerPorId($id)
     {
         $this->db->query("SELECT * FROM empresas WHERE id = :id");
@@ -21,51 +15,16 @@ class Empresa
         return $this->db->single();
     }
 
-    public function registrar($datos)
-    {
-        $errores = $this->validarDatos($datos);
-        if (!empty($errores)) {
-            return ['exito' => false, 'errores' => $errores];
-        }
-
-        // Verificar RUC duplicado
-        if ($this->existeRuc($datos['ruc'])) {
-            return ['exito' => false, 'errores' => ['ruc' => 'El RUC ya está registrado.']];
-        }
-
-        $this->db->query("
-            INSERT INTO empresas (nombre, telefono, email, ubicacion, ruc)
-            VALUES (:nombre, :telefono, :email, :ubicacion, :ruc)
-        ");
-
-        $this->db->bind(':nombre', $datos['nombre']);
-        $this->db->bind(':telefono', $datos['telefono']);
-        $this->db->bind(':email', $datos['email']);
-        $this->db->bind(':ubicacion', $datos['ubicacion']);
-        $this->db->bind(':ruc', $datos['ruc']);
-
-        $exito = $this->db->execute();
-        return [
-            'exito' => $exito,
-            'id' => $exito ? $this->db->lastInsertId() : null
-        ];
-    }
-
     public function actualizar($id, $datos)
     {
         $empresa = $this->obtenerPorId($id);
         if (!$empresa) {
-            return ['exito' => false, 'errores' => ['general' => 'Empresa no encontrada']];
+            return ['exito' => false, 'errores' => ['general' => 'Empresa no encontrada.']];
         }
 
-        $errores = $this->validarDatos($datos, true);
+        $errores = $this->validarDatos($datos, $id);
         if (!empty($errores)) {
             return ['exito' => false, 'errores' => $errores];
-        }
-
-        // Verificar RUC duplicado en otra empresa
-        if ($this->existeRuc($datos['ruc'], $id)) {
-            return ['exito' => false, 'errores' => ['ruc' => 'Ya existe otra empresa con ese RUC.']];
         }
 
         $this->db->query("
@@ -89,13 +48,6 @@ class Empresa
         return ['exito' => $exito];
     }
 
-    public function eliminar($id)
-    {
-        $this->db->query("DELETE FROM empresas WHERE id = :id");
-        $this->db->bind(':id', $id);
-        return $this->db->execute();
-    }
-
     public function existeRuc($ruc, $excluirId = null)
     {
         $query = "SELECT id FROM empresas WHERE ruc = :ruc";
@@ -112,22 +64,43 @@ class Empresa
         return $this->db->single() !== false;
     }
 
-    public function validarDatos($datos, $esActualizacion = false)
+    public function validarDatos($datos, $excluirId = null)
     {
         $errores = [];
 
+        // Nombre
         if (empty($datos['nombre'])) {
             $errores['nombre'] = 'El nombre es obligatorio.';
+        } elseif (mb_strlen($datos['nombre']) > 255) {
+            $errores['nombre'] = 'El nombre no debe exceder 255 caracteres.';
         }
 
+        // RUC
         if (empty($datos['ruc'])) {
             $errores['ruc'] = 'El RUC es obligatorio.';
         } elseif (!preg_match('/^\d{13}$/', $datos['ruc'])) {
-            $errores['ruc'] = 'El RUC debe tener 13 dígitos.';
+            $errores['ruc'] = 'El RUC debe tener exactamente 13 dígitos.';
+        } elseif ($this->existeRuc($datos['ruc'], $excluirId)) {
+            $errores['ruc'] = 'El RUC ya está registrado en otra empresa.';
         }
 
-        if (!empty($datos['email']) && !filter_var($datos['email'], FILTER_VALIDATE_EMAIL)) {
-            $errores['email'] = 'El email no es válido.';
+        // Teléfono
+        if (!empty($datos['telefono']) && mb_strlen($datos['telefono']) > 20) {
+            $errores['telefono'] = 'El teléfono no debe exceder 20 caracteres.';
+        }
+
+        // Email
+        if (!empty($datos['email'])) {
+            if (!filter_var($datos['email'], FILTER_VALIDATE_EMAIL)) {
+                $errores['email'] = 'El correo electrónico no es válido.';
+            } elseif (mb_strlen($datos['email']) > 100) {
+                $errores['email'] = 'El correo no debe exceder 100 caracteres.';
+            }
+        }
+
+        // Ubicación
+        if (!empty($datos['ubicacion']) && mb_strlen($datos['ubicacion']) > 255) {
+            $errores['ubicacion'] = 'La ubicación no debe exceder 255 caracteres.';
         }
 
         return $errores;

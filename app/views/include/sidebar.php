@@ -38,6 +38,13 @@
                     <span>Asistencias</span>
                 </a>
             </li>
+            <!-- Empresa -->
+            <li class="<?php echo ($current_page == 'empresa') ? 'active' : '' ?>">
+                <a href="/empresa/configuracion">
+                    <i class="fas fa-building"></i>
+                    <span>Empresa</span>
+                </a>
+            </li>
         </ul>
     </nav>
 </aside>
