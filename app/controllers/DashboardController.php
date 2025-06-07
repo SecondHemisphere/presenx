@@ -4,6 +4,8 @@ class DashboardController
     private $db;
     private $userModel;
     private $cargoModel;
+    private $empleadoModel;
+    private $asistenciaModel;
 
     // Constructor: inicializa la conexión a la base de datos y el modelo de usuario.
     // Si el usuario no ha iniciado sesión, lo redirige al login.
@@ -12,6 +14,8 @@ class DashboardController
         $this->db = $db;
         $this->userModel = new User($db);
         $this->cargoModel = new Cargo($db);
+        $this->empleadoModel = new Empleado($db);
+        $this->asistenciaModel = new Asistencia($db);
 
         if (!$this->isLoggedIn()) {
             header('Location: /login');
@@ -30,6 +34,11 @@ class DashboardController
             'title' => 'Dashboard',
             'user' => $user,
             'total_cargos' => $this->cargoModel->obtenerTotal(),
+            'total_empleados' => $this->empleadoModel->obtenerTotal(),
+            'total_asistencias' => $this->asistenciaModel->obtenerTotal(),
+            'asistencias_hoy' => $this->asistenciaModel->contarDeHoy(),
+            'estado_asistencias' => $this->asistenciaModel->contarPorEstadoHoy(),
+            'ultimasEntradas' => $this->asistenciaModel->ultimasEntradas()
         ];
 
         // Variable opcional para marcar el menú activo en la vista

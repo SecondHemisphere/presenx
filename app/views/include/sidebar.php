@@ -34,7 +34,7 @@
             <!-- Asistencias -->
             <li class="<?php echo ($current_page == 'asistencias') ? 'active' : '' ?>">
                 <a href="/asistencias">
-                    <i class="fas fa-user-tie"></i>
+                    <i class="fas fa-user-check"></i>
                     <span>Asistencias</span>
                 </a>
             </li>

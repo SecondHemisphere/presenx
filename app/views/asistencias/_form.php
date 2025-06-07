@@ -47,12 +47,6 @@
             <?php endif; ?>
         </div>
 
-        <!-- Observaciones -->
-        <div class="campo">
-            <label for="observaciones">Observaciones</label>
-            <textarea name="observaciones" id="observaciones" rows="2"><?= htmlspecialchars($asistencia->observaciones ?? '') ?></textarea>
-        </div>
-
         <!-- Estado -->
         <div class="campo <?= isset($errors['estado']) ? 'error-input' : '' ?>">
             <label for="estado">Estado*</label>

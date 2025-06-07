@@ -58,8 +58,6 @@ $fin = min($total_registros, $pagina_actual * $por_pagina);
             ['campo' => 'salida', 'titulo' => 'Hora de Salida'],
             ['campo' => 'fecha', 'titulo' => 'Fecha'],
             ['campo' => 'estado', 'titulo' => 'Estado'],
-            ['campo' => 'observaciones', 'titulo' => 'Observaciones'],
-            ['campo' => 'registrado_por_nombre', 'titulo' => 'Registrado Por']
         ];
 
         $filas = $registros_paginados;

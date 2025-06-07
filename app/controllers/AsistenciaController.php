@@ -56,8 +56,8 @@ class AsistenciaController
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $inputData = $_POST;
-            $inputData['registrado_por'] = $_SESSION['user_id'] ?? null;
 
+            // Construcción de timestamps si se da solo la hora
             $hoy = date('Y-m-d');
             if (!empty($inputData['entrada']) && preg_match('/^\d{2}:\d{2}$/', $inputData['entrada'])) {
                 $inputData['entrada'] = "$hoy {$inputData['entrada']}:00";
@@ -65,6 +65,9 @@ class AsistenciaController
             if (!empty($inputData['salida']) && preg_match('/^\d{2}:\d{2}$/', $inputData['salida'])) {
                 $inputData['salida'] = "$hoy {$inputData['salida']}:00";
             }
+
+            // Eliminar campos innecesarios
+            unset($inputData['observaciones'], $inputData['registrado_por']);
 
             $result = $this->asistenciaModel->registrar($inputData);
 
@@ -119,7 +122,6 @@ class AsistenciaController
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $inputData = $_POST;
-            $inputData['registrado_por'] = $_SESSION['user_id'] ?? null;
 
             $hoy = date('Y-m-d');
             if (!empty($inputData['entrada']) && preg_match('/^\d{2}:\d{2}$/', $inputData['entrada'])) {
@@ -128,6 +130,9 @@ class AsistenciaController
             if (!empty($inputData['salida']) && preg_match('/^\d{2}:\d{2}$/', $inputData['salida'])) {
                 $inputData['salida'] = "$hoy {$inputData['salida']}:00";
             }
+
+            // Eliminar campos innecesarios
+            unset($inputData['observaciones'], $inputData['registrado_por']);
 
             $result = $this->asistenciaModel->actualizar($id, $inputData);
 
@@ -162,6 +167,13 @@ class AsistenciaController
 
         header('Location: /asistencias');
         exit;
+    }
+
+    public function obtenerTotal()
+    {
+        $this->db->query("SELECT COUNT(*) as total FROM asistencias");
+        $resultado = $this->db->single();
+        return $resultado->total;
     }
 
     private function isLoggedIn()
