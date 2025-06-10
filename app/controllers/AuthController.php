@@ -59,7 +59,7 @@ class AuthController
         $password = $data['password'] ?? '';
         $confirmar = $data['confirm_password'] ?? '';
         $rol = 'Administrador';
-        
+
         // Validaciones
         if (empty($nombre) || empty($email) || empty($password) || empty($confirmar)) {
             $_SESSION['error'] = 'Todos los campos son obligatorios';
@@ -111,6 +111,131 @@ class AuthController
         session_unset();
         session_destroy();
         header('Location: /login');
+        exit;
+    }
+
+    public function showMiCuenta()
+    {
+        if (!isset($_SESSION['user_id'])) {
+            $_SESSION['error'] = 'Debes iniciar sesión para acceder a esta página.';
+            header('Location: /login');
+            exit;
+        }
+
+        $usuario_autenticado = $this->usuarioModel->getById($_SESSION['user_id']);
+
+        if (!$usuario_autenticado) {
+            session_unset();
+            session_destroy();
+            $_SESSION['error'] = 'Tu sesión ha expirado o el usuario no existe. Por favor, inicia sesión de nuevo.';
+            header('Location: /login');
+            exit;
+        }
+
+        $view = 'mi_cuenta.php';
+        require_once __DIR__ . '/../views/include/layout.php';
+    }
+
+    public function updateProfile($data)
+    {
+        if (!isset($_SESSION['user_id'])) {
+            $_SESSION['error'] = 'Debes iniciar sesión para actualizar tu perfil.';
+            header('Location: /login');
+            exit;
+        }
+
+        $id_usuario = $_SESSION['user_id'];
+        $nuevo_nombre = trim($data['nombre'] ?? '');
+        $nuevo_email = trim($data['email'] ?? '');
+
+        // Validaciones
+        if (empty($nuevo_nombre) || empty($nuevo_email)) {
+            $_SESSION['error'] = 'Nombre y correo electrónico son obligatorios.';
+            header('Location: /mi-cuenta');
+            exit;
+        }
+        if (!filter_var($nuevo_email, FILTER_VALIDATE_EMAIL)) {
+            $_SESSION['error'] = 'El formato del correo electrónico no es válido.';
+            header('Location: /mi-cuenta');
+            exit;
+        }
+
+        $usuario_con_email = $this->usuarioModel->obtenerPorId($nuevo_email);
+        if ($usuario_con_email && $usuario_con_email->id != $id_usuario) {
+            $_SESSION['error'] = 'El correo electrónico ya está en uso por otra cuenta.';
+            header('Location: /mi-cuenta');
+            exit;
+        }
+
+        $data_update = [
+            'id' => $id_usuario,
+            'nombre' => htmlspecialchars($nuevo_nombre, ENT_QUOTES, 'UTF-8'),
+            'email' => htmlspecialchars($nuevo_email, ENT_QUOTES, 'UTF-8')
+        ];
+
+        if ($this->usuarioModel->actualizar($data_update)) {
+            $_SESSION['success'] = '¡Tu perfil ha sido actualizado exitosamente!';
+            $_SESSION['user_nombre'] = $data_update['nombre'];
+        } else {
+            $_SESSION['error'] = 'Error al actualizar el perfil. Inténtalo de nuevo.';
+        }
+
+        header('Location: /mi-cuenta');
+        exit;
+    }
+
+    public function changePassword($data)
+    {
+        if (!isset($_SESSION['user_id'])) {
+            $_SESSION['error'] = 'Debes iniciar sesión para cambiar tu contraseña.';
+            header('Location: /login');
+            exit;
+        }
+
+        $id_usuario = $_SESSION['user_id'];
+        $current_password = $data['current_password'] ?? '';
+        $new_password = $data['new_password'] ?? '';
+        $confirm_new_password = $data['confirm_new_password'] ?? '';
+
+        // Validaciones
+        if (empty($current_password) || empty($new_password) || empty($confirm_new_password)) {
+            $_SESSION['error'] = 'Todos los campos de contraseña son obligatorios.';
+            header('Location: /mi-cuenta');
+            exit;
+        }
+        if (strlen($new_password) < 8) {
+            $_SESSION['error'] = 'La nueva contraseña debe tener al menos 8 caracteres.';
+            header('Location: /mi-cuenta');
+            exit;
+        }
+        if ($new_password !== $confirm_new_password) {
+            $_SESSION['error'] = 'La nueva contraseña y la confirmación no coinciden.';
+            header('Location: /mi-cuenta');
+            exit;
+        }
+
+        $usuario = $this->usuarioModel->obtenerPorId($id_usuario);
+        if (!$usuario) {
+            $_SESSION['error'] = 'Error: Usuario no encontrado.';
+            header('Location: /mi-cuenta');
+            exit;
+        }
+
+        if (!password_verify($current_password, $usuario->password)) {
+            $_SESSION['error'] = 'La contraseña actual es incorrecta.';
+            header('Location: /mi-cuenta');
+            exit;
+        }
+
+        $nueva_contrasena_hasheada = password_hash($new_password, PASSWORD_DEFAULT);
+
+        if ($this->usuarioModel->updatePassword($id_usuario, $nueva_contrasena_hasheada)) {
+            $_SESSION['success'] = '¡Tu contraseña ha sido actualizada exitosamente!';
+        } else {
+            $_SESSION['error'] = 'Error al cambiar la contraseña. Inténtalo de nuevo.';
+        }
+
+        header('Location: /mi-cuenta');
         exit;
     }
 }

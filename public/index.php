@@ -87,6 +87,12 @@ $routeMap = [
     '/usuarios/store' => ['UsuarioController', 'store'],
 
     '/empresa/configuracion' => ['EmpresaController', 'configuracion'],
+
+    '/mi-cuenta' => ['UserProfileController', 'mostrarMiCuenta'],
+    '/mi-cuenta/actualizar-perfil' => ['CUserProfileController', 'actualizarPerfil'],
+    '/mi-cuenta/cambiar-contrasena' => ['UserProfileController', 'cambiarContrasena'],
+
+    // Otras rutas de la aplicación
 ];
 
 // Detectar ruta dinámica

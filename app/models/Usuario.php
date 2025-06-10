@@ -100,4 +100,19 @@ class Usuario
         $this->db->bind(':usuario_id', $usuarioId);
         return array_column($this->db->resultSet(), 'nombre');
     }
+
+    private $table_name = "usuarios"; // Asegúrate de que este sea el nombre de tu tabla de usuarios
+
+    public function updatePassword($id, $new_hashed_password)
+    {
+        $this->db->query('
+            UPDATE ' . $this->table_name . '
+            SET password = :password
+            WHERE id = :id
+        ');
+        $this->db->bind(':password', $new_hashed_password);
+        $this->db->bind(':id', $id);
+
+        return $this->db->execute();
+    }
 }
