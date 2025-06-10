@@ -136,32 +136,60 @@ class Usuario
     {
         $errores = [];
 
-        if (empty($datos['nombre'])) {
-            $errores['nombre'] = 'El nombre es obligatorio.';
-        } elseif (strlen($datos['nombre']) > 100) {
-            $errores['nombre'] = 'El nombre no debe exceder los 100 caracteres.';
+        if ($error = $this->validarNombre($datos['nombre'] ?? '')) {
+            $errores['nombre'] = $error;
         }
 
-        if (empty($datos['email'])) {
-            $errores['email'] = 'El correo es obligatorio.';
-        } elseif (!filter_var($datos['email'], FILTER_VALIDATE_EMAIL)) {
-            $errores['email'] = 'El correo no es válido.';
-        } elseif (strlen($datos['email']) > 150) {
-            $errores['email'] = 'El correo no debe exceder los 150 caracteres.';
+        if ($error = $this->validarEmail($datos['email'] ?? '')) {
+            $errores['email'] = $error;
         }
 
-        if ($validarPassword && (empty($datos['password']) || strlen($datos['password']) < 6)) {
-            $errores['password'] = 'La contraseña debe tener al menos 6 caracteres.';
+        if ($validarPassword && ($error = $this->validarPassword($datos['password'] ?? ''))) {
+            $errores['password'] = $error;
         }
 
-        if (!empty($datos['rol']) && !in_array($datos['rol'], ['Administrador', 'Usuario'])) {
-            $errores['rol'] = 'Rol no válido.';
+        if (isset($datos['rol']) && ($error = $this->validarRol($datos['rol']))) {
+            $errores['rol'] = $error;
         }
 
-        if (!empty($datos['estado']) && !in_array($datos['estado'], ['activo', 'inactivo'])) {
-            $errores['estado'] = 'Estado no válido.';
+        if (isset($datos['estado']) && ($error = $this->validarEstado($datos['estado']))) {
+            $errores['estado'] = $error;
         }
 
         return empty($errores) ? true : $errores;
+    }
+
+    public function validarNombre($nombre)
+    {
+        if (empty($nombre)) return 'El nombre es obligatorio.';
+        if (strlen($nombre) > 100) return 'El nombre no debe exceder los 100 caracteres.';
+        return null;
+    }
+
+    public function validarEmail($email)
+    {
+        if (empty($email)) return 'El correo es obligatorio.';
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) return 'El correo no es válido.';
+        if (strlen($email) > 150) return 'El correo no debe exceder los 150 caracteres.';
+        return null;
+    }
+
+    public function validarPassword($password)
+    {
+        if (empty($password)) return 'La contraseña es obligatoria.';
+        if (strlen($password) < 8) return 'La contraseña debe tener al menos 8 caracteres.';
+        return null;
+    }
+
+    public function validarRol($rol)
+    {
+        if (!in_array($rol, ['Administrador', 'Usuario'])) return 'Rol no válido.';
+        return null;
+    }
+
+    public function validarEstado($estado)
+    {
+        if (!in_array($estado, ['activo', 'inactivo'])) return 'Estado no válido.';
+        return null;
     }
 }

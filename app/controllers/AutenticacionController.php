@@ -14,32 +14,33 @@ class AutenticacionController
         }
     }
 
-    // Mostrar formulario de login
-    public function showLogin()
+    public function showLogin($errores = [], $datos = [])
     {
         $esLogin = true;
         $vista = 'auth/login.php';
         require_once __DIR__ . '/../views/include/layout.php';
     }
 
-    // Mostrar formulario de registro
-    public function showRegister()
+    public function showRegister($errores = [], $datos = [])
     {
         $esLogin = true;
         $vista = 'auth/register.php';
         require_once __DIR__ . '/../views/include/layout.php';
     }
 
-    // Procesar login
     public function login($datos)
     {
         $email = trim($datos['email'] ?? '');
         $contrasena = $datos['password'] ?? '';
 
-        if (empty($email) || empty($contrasena)) {
-            $_SESSION['error'] = 'Todos los campos son obligatorios.';
-            header('Location: /login');
-            exit;
+        $errores = [];
+
+        if (empty($email)) $errores['email'] = 'El email es obligatorio.';
+        if (empty($contrasena)) $errores['password'] = 'La contraseña es obligatoria.';
+
+        if (!empty($errores)) {
+            $this->showLogin($errores, $datos);
+            return;
         }
 
         $usuario = $this->usuarioModelo->iniciarSesion($email, $contrasena);
@@ -49,33 +50,52 @@ class AutenticacionController
             $_SESSION['user_rol'] = $usuario->rol;
             $_SESSION['user_nombre'] = $usuario->nombre;
             header('Location: /dashboard');
-        } else {
-            $_SESSION['error'] = 'Credenciales incorrectas o cuenta inactiva.';
-            header('Location: /login');
+            exit;
         }
-        exit;
+
+        $errores['general'] = 'Credenciales incorrectas o cuenta inactiva.';
+        $this->showLogin($errores, $datos);
     }
 
-    // Procesar registro
     public function register($datos)
     {
-        $resultado = $this->usuarioModelo->registrar($datos);
+        $nombre = trim($datos['nombre'] ?? '');
+        $email = trim($datos['email'] ?? '');
+        $password = trim($datos['password'] ?? '');
+
+        $errores = [];
+
+        $valNombre = $this->usuarioModelo->validarNombre($nombre);
+        if ($valNombre !== true) $errores['nombre'] = $valNombre;
+
+        $valEmail = $this->usuarioModelo->validarEmail($email);
+        if ($valEmail !== true) $errores['email'] = $valEmail;
+
+        $valPassword = $this->usuarioModelo->validarPassword($password);
+        if ($valPassword !== true) $errores['password'] = $valPassword;
+
+        if (!empty($errores)) {
+            $this->showRegister($errores, $datos);
+            return;
+        }
+
+        $entrada = [
+            'nombre' => $nombre,
+            'email' => $email,
+            'password' => $password,
+        ];
+
+        $resultado = $this->usuarioModelo->registrar($entrada);
 
         if ($resultado['exito']) {
             $_SESSION['exito'] = 'Registro exitoso. Ahora puedes iniciar sesión.';
             header('Location: /login');
+            exit;
         } else {
-            $mensajes = [];
-            foreach ($resultado['errores'] as $campo => $mensaje) {
-                $mensajes[] = ucfirst($campo) . ': ' . $mensaje;
-            }
-            $_SESSION['error'] = implode('<br>', $mensajes);
-            header('Location: /register');
+            $this->showRegister($resultado['errores'], $datos);
         }
-        exit;
     }
 
-    // Cerrar sesión
     public function logout()
     {
         session_unset();
@@ -84,7 +104,6 @@ class AutenticacionController
         exit;
     }
 
-    // Mostrar perfil del usuario logueado
     public function mostrarPerfil()
     {
         if (!isset($_SESSION['user_id'])) {
@@ -98,11 +117,14 @@ class AutenticacionController
             exit;
         }
 
+        $datos = [
+            'usuario' => $usuario
+        ];
+
         $vista = 'auth/profile.php';
         require_once __DIR__ . '/../views/include/layout.php';
     }
 
-    // Actualizar datos del perfil (sin contraseña)
     public function actualizarPerfil($datos)
     {
         if (!isset($_SESSION['user_id'])) {
@@ -111,22 +133,36 @@ class AutenticacionController
         }
 
         $id = $_SESSION['user_id'];
+        $errores = [];
+
+        if (isset($datos['nombre'])) {
+            $val = $this->usuarioModelo->validarNombre(trim($datos['nombre']));
+            if ($val !== true) $errores['nombre'] = $val;
+        }
+
+        if (isset($datos['email'])) {
+            $val = $this->usuarioModelo->validarEmail(trim($datos['email']), $id);
+            if ($val !== true) $errores['email'] = $val;
+        }
+
+        if (!empty($errores)) {
+            $usuario = (object) array_merge((array)$this->usuarioModelo->obtenerPorId($id), $datos);
+            $vista = 'auth/profile.php';
+            require __DIR__ . '/../views/include/layout.php';
+            return;
+        }
+
         $resultado = $this->usuarioModelo->actualizar($id, $datos);
 
         if ($resultado['exito']) {
             $_SESSION['exito'] = 'Perfil actualizado correctamente.';
         } else {
-            $mensajes = [];
-            foreach ($resultado['errores'] as $campo => $mensaje) {
-                $mensajes[] = ucfirst($campo) . ': ' . $mensaje;
-            }
-            $_SESSION['error'] = implode('<br>', $mensajes);
+            $_SESSION['error'] = implode('<br>', $resultado['errores']);
         }
-        header('Location: /perfil');
-        exit;
+
+        $this->mostrarPerfil();
     }
 
-    // Cambiar contraseña
     public function cambiarContrasena($id, $contrasenaActual, $contrasenaNueva, $contrasenaNuevaConfirm)
     {
         if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] != $id) {
@@ -135,29 +171,31 @@ class AutenticacionController
         }
 
         $usuario = $this->usuarioModelo->obtenerPorId($id);
-
         if (!$usuario) {
             $_SESSION['error'] = 'Usuario no encontrado.';
-            header('Location: /perfil');
-            exit;
+            $this->mostrarPerfil();
+            return;
         }
 
+        $errores = [];
+
         if (!password_verify($contrasenaActual, $usuario->password)) {
-            $_SESSION['error'] = 'La contraseña actual es incorrecta.';
-            header('Location: /perfil');
-            exit;
+            $errores['contrasenaActual'] = 'La contraseña actual es incorrecta.';
         }
 
         if ($contrasenaNueva !== $contrasenaNuevaConfirm) {
-            $_SESSION['error'] = 'La nueva contraseña y la confirmación no coinciden.';
-            header('Location: /perfil');
-            exit;
+            $errores['contrasenaNuevaConfirm'] = 'La nueva contraseña y la confirmación no coinciden.';
         }
 
-        if (strlen($contrasenaNueva) < 6) {
-            $_SESSION['error'] = 'La nueva contraseña debe tener al menos 6 caracteres.';
-            header('Location: /perfil');
-            exit;
+        $val = $this->usuarioModelo->validarPassword($contrasenaNueva);
+        if ($val !== true) {
+            $errores['contrasenaNueva'] = $val;
+        }
+
+        if (!empty($errores)) {
+            $_SESSION['error'] = implode('<br>', $errores);
+            $this->mostrarPerfil();
+            return;
         }
 
         $exito = $this->usuarioModelo->actualizarPassword($id, $contrasenaNueva);
@@ -168,7 +206,6 @@ class AutenticacionController
             $_SESSION['error'] = 'Error al cambiar la contraseña.';
         }
 
-        header('Location: /perfil');
-        exit;
+        $this->mostrarPerfil();
     }
 }
