@@ -27,8 +27,8 @@
 
   /* Colores de bordes y divisores */
   --color-borde-inferior-tabla: #eee;
-  --color-borde-contenedor: #e0e0e0; /* Nuevo/Confirmado */
-
+  --color-borde-contenedor: #e0e0e0;
+  
   /* Colores de sombra para elementos del dashboard */
   --sombra-tarjeta: rgba(0, 0, 0, 0.05);
   --sombra-grafico-pastel: rgba(0, 0, 0, 0.08);
@@ -147,25 +147,24 @@
   background-color: var(--color-tarjeta-otras-estadisticas-7);
 }
 
-/* --- CAMBIOS APLICADOS AQUÍ --- */
 .asistencia-graficos-caja {
   display: flex;
-  gap: 3rem; /* Aumentado el espacio entre los gráficos */
-  margin-bottom: 3.5rem; /* Ajuste de margen */
+  gap: 3rem;
+  margin-bottom: 3.5rem;
   padding: 2rem;
   background-color: var(--color-fondo-caja-principal);
   border-radius: 1.2rem;
   box-shadow: 0 0.4rem 1.2rem var(--sombra-caja-principal);
-  border: 0.1rem solid var(--color-borde-contenedor); /* Borde para la caja principal */
+  border: 0.1rem solid var(--color-borde-contenedor);
   flex-wrap: wrap;
   align-items: flex-start;
-  justify-content: space-around; /* Distribuye el espacio para separar los elementos */
+  justify-content: space-around;
 }
 
 .grafico-container {
   flex: 1;
   min-width: 28rem;
-  max-width: 35rem; /* Nuevo max-width para el gráfico de barra */
+  max-width: 35rem;
   background: none;
   box-shadow: none;
   padding: 0;
@@ -224,13 +223,13 @@
 .estado-asistencias {
   flex: 1.5;
   min-width: 30rem;
-  max-width: 45rem; /* Nuevo max-width para el gráfico de pastel */
+  max-width: 45rem;
   background: none;
   box-shadow: none;
   padding: 0;
   display: flex;
   flex-direction: column;
-  align-items: center; /* Centra el contenido (título, gráfico, leyenda) */
+  align-items: center;
   justify-content: center;
 }
 
@@ -271,7 +270,7 @@
   margin: 0;
   font-size: 1.7rem;
   color: var(--color-texto-general-claro);
-  text-align: left; /* Alinea el texto de la leyenda a la izquierda */
+  text-align: left;
 }
 
 .leyenda li {
@@ -279,7 +278,7 @@
   font-size: 1.5rem;
   display: flex;
   align-items: center;
-  gap: 0.8rem; /* Espacio entre el cuadro de color y el texto */
+  gap: 0.8rem;
 }
 
 .cuadro {

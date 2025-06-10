@@ -29,6 +29,7 @@ class UsuarioController
         ];
 
         unset($_SESSION['success_message'], $_SESSION['error_message']);
+
         $view = 'admin/usuarios/index.php';
         require_once __DIR__ . '/../views/include/layout.php';
     }
@@ -56,17 +57,33 @@ class UsuarioController
                 'nombre' => trim($_POST['nombre']),
                 'email' => trim($_POST['email']),
                 'password' => trim($_POST['password']),
-                'rol' => trim($_POST['rol'] ?? 'Administrador'),
+                'rol' => trim($_POST['rol'] ?? 'Usuario'),
             ];
 
             $errores = [];
 
-            if ($this->usuarioModel->existeEmail($inputData['email'])) {
-                $errores['email'] = 'Este correo ya está registrado';
+            // Validar nombre
+            if (empty($inputData['nombre'])) {
+                $errores['nombre'] = 'El nombre es obligatorio.';
             }
 
+            // Validar email
+            if (empty($inputData['email'])) {
+                $errores['email'] = 'El correo es obligatorio.';
+            } elseif (!filter_var($inputData['email'], FILTER_VALIDATE_EMAIL)) {
+                $errores['email'] = 'El correo no es válido.';
+            } elseif ($this->usuarioModel->existeEmail($inputData['email'])) {
+                $errores['email'] = 'Este correo ya está registrado.';
+            }
+
+            // Validar password
             if (strlen($inputData['password']) < 6) {
-                $errores['password'] = 'La contraseña debe tener al menos 6 caracteres';
+                $errores['password'] = 'La contraseña debe tener al menos 6 caracteres.';
+            }
+
+            // Validar rol (sólo Administrador o Usuario)
+            if (!in_array($inputData['rol'], ['Administrador', 'Usuario'])) {
+                $inputData['rol'] = 'Usuario';
             }
 
             if (empty($errores)) {
@@ -90,7 +107,7 @@ class UsuarioController
         }
     }
 
-    // Editar usuario
+    // Mostrar formulario para editar usuario
     public function edit($id)
     {
         $usuario = $this->usuarioModel->obtenerPorId($id);
@@ -113,7 +130,7 @@ class UsuarioController
         require_once __DIR__ . '/../views/include/layout.php';
     }
 
-    // Actualiza el usuario
+    // Actualiza usuario (sin cambiar contraseña aquí)
     public function update($id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -124,14 +141,57 @@ class UsuarioController
                 'estado' => trim($_POST['estado']),
             ];
 
-            $this->usuarioModel->actualizar($id, $inputData);
-            $_SESSION['success_message'] = 'Usuario actualizado correctamente';
-            header('Location: /usuarios');
-            exit;
+            $errores = [];
+
+            // Validaciones básicas
+            if (empty($inputData['nombre'])) {
+                $errores['nombre'] = 'El nombre es obligatorio.';
+            }
+
+            if (empty($inputData['email'])) {
+                $errores['email'] = 'El correo es obligatorio.';
+            } elseif (!filter_var($inputData['email'], FILTER_VALIDATE_EMAIL)) {
+                $errores['email'] = 'El correo no es válido.';
+            } else {
+                // Validar que el email no esté registrado por otro usuario
+                $usuarioExistente = $this->usuarioModel->obtenerPorId($id);
+                if ($usuarioExistente && $usuarioExistente->email !== $inputData['email']) {
+                    if ($this->usuarioModel->existeEmail($inputData['email'])) {
+                        $errores['email'] = 'Este correo ya está registrado.';
+                    }
+                }
+            }
+
+            if (!in_array($inputData['rol'], ['Administrador', 'Usuario'])) {
+                $inputData['rol'] = 'Usuario';
+            }
+
+            if (!in_array($inputData['estado'], ['activo', 'inactivo'])) {
+                $inputData['estado'] = 'activo';
+            }
+
+            if (empty($errores)) {
+                $this->usuarioModel->actualizar($id, $inputData);
+                $_SESSION['success_message'] = 'Usuario actualizado correctamente';
+                header('Location: /usuarios');
+                exit;
+            } else {
+                $usuario = (object) $inputData;
+                $usuario->id = $id;
+                $data = [
+                    'title' => 'Editar Usuario',
+                    'usuario' => $usuario,
+                    'errors' => $errores,
+                    'form_action' => "/usuarios/update/$id",
+                    'current_page' => 'usuarios'
+                ];
+                $view = 'admin/usuarios/edit.php';
+                require_once __DIR__ . '/../views/include/layout.php';
+            }
         }
     }
 
-    // Elimina usuario (opcional: cambia estado a inactivo en lugar de borrar)
+    // Cambiar estado a inactivo (eliminar usuario "lógicamente")
     public function delete($id)
     {
         $this->usuarioModel->eliminar($id);
@@ -140,6 +200,7 @@ class UsuarioController
         exit;
     }
 
+    // Verifica si el usuario está logueado
     private function isLoggedIn()
     {
         return isset($_SESSION['user_id']);

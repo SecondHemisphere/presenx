@@ -1,9 +1,13 @@
 <aside class="sidebar">
     <!-- Información del usuario -->
     <div class="user-info">
-        <div class="user-avatar">J</div>
+        <div class="user-avatar">
+            <?= isset($_SESSION['user_nombre']) && !empty($_SESSION['user_nombre'])
+                ? strtoupper(substr(trim($_SESSION['user_nombre']), 0, 1))
+                : '?' ?>
+        </div>
         <div class="user-details">
-            <div class="user-name"><?= $_SESSION['user_name'] ?? 'Invitado' ?></div>
+            <div class="user-name"><?= $_SESSION['user_nombre'] ?? 'Invitado' ?></div>
             <div class="user-role"><?= $_SESSION['user_rol'] ?? 'Sin rol' ?></div>
         </div>
     </div>
