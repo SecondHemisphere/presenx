@@ -1,20 +1,20 @@
 <!-- Contenedor del formulario de edición -->
 <div class="formulario">
     <!-- Título del formulario -->
-    <h2><?= $data['title'] ?></h2>
+    <h2><?= $datos['titulo'] ?></h2>
 
     <?php
     // Datos del usuario a editar
-    $usuario = $data['usuario'];
+    $usuario = $datos['usuario'];
 
     // Errores de validación (si existen)
-    $errors = $errors ?? [];
+    $errores = $errores ?? [];
 
     // Ruta a la que se enviará el formulario
-    $form_action = "/usuarios/update/{$usuario->id}";
+    $accion_formulario = "/usuarios/update/{$usuario->id}";
 
     // Texto del botón de envío
-    $submit_text = "Actualizar";
+    $submit_texto = "Actualizar";
 
     // Inclusión del formulario reutilizable
     include __DIR__ . '/_form.php';

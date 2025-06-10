@@ -5,18 +5,19 @@ require_once __DIR__ . '/../app/autoload.php';
 // Configurar zona horaria para Ecuador
 date_default_timezone_set('America/Guayaquil');
 
-// Inicia la sesión
+// Iniciar sesión si no está iniciada
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
 $db = new Database();
 
-$request = $_SERVER['REQUEST_URI'];
-$path = parse_url($request, PHP_URL_PATH);
+// Obtener la ruta solicitada
+$rutaSolicitada = $_SERVER['REQUEST_URI'];
+$ruta = parse_url($rutaSolicitada, PHP_URL_PATH);
 
 // Rutas públicas: accesibles sin iniciar sesión
-$publicRoutes = [
+$rutasPublicas = [
     '/',
     '/login',
     '/register',
@@ -26,8 +27,8 @@ $publicRoutes = [
     '/storeAsistencia'
 ];
 
-// Rutas de administrador
-$adminRoutes = [
+// Rutas que requieren rol administrador
+$rutasAdmin = [
     '/dashboard',
     '/cargos',
     '/cargos/create',
@@ -43,8 +44,8 @@ $adminRoutes = [
     '/empresa/configuracion',
 ];
 
-// Rutas dinámicas que también requieren admin
-$adminPrefixRoutes = [
+// Prefijos de rutas dinámicas que también requieren administrador
+$prefijosRutasAdmin = [
     '/cargos/edit/',
     '/cargos/update/',
     '/cargos/delete/',
@@ -57,16 +58,16 @@ $adminPrefixRoutes = [
     '/usuarios/delete/'
 ];
 
-// Mapeo de rutas estáticas
-$routeMap = [
+// Mapeo de rutas estáticas a controladores y métodos
+$mapaRutas = [
     '/' => ['HomeController', 'index'],
     '/storeAsistencia' => ['AsistenciaController', 'storeUsuario'],
 
-    '/login' => ['AuthController', 'showLogin'],
-    '/register' => ['AuthController', 'showRegister'],
-    '/auth/login' => ['AuthController', 'login'],
-    '/auth/register' => ['AuthController', 'register'],
-    '/logout' => ['AuthController', 'logout'],
+    '/login' => ['AutenticacionController', 'mostrarLogin'],
+    '/register' => ['AutenticacionController', 'mostrarRegistro'],
+    '/auth/login' => ['AutenticacionController', 'login'],
+    '/auth/register' => ['AutenticacionController', 'register'],
+    '/logout' => ['AutenticacionController', 'logout'],
 
     '/dashboard' => ['DashboardController', 'index'],
 
@@ -90,69 +91,72 @@ $routeMap = [
 
     '/mi-cuenta' => ['MiCuentaController', 'index'],
     '/mi-cuenta/actualizar' => ['MiCuentaController', 'actualizar'],
-    '/mi-cuenta/contrasena' => ['MiCuentaController', 'cambiarContrasena'],
+    '/mi-cuenta/cambiar-contrasena' => ['MiCuentaController', 'cambiarContrasena'],
 ];
 
-// Detectar ruta dinámica
-if (array_key_exists($path, $routeMap)) {
-    list($controllerName, $method) = $routeMap[$path];
-} elseif (preg_match('#^/cargos/(edit|update|delete)/(\d+)$#', $path, $matches)) {
-    $controllerName = 'CargoController';
-    $method = $matches[1];
-    $_GET['id'] = $matches[2];
-} elseif (preg_match('#^/empleados/(edit|update|delete)/(\d+)$#', $path, $matches)) {
-    $controllerName = 'EmpleadoController';
-    $method = $matches[1];
-    $_GET['id'] = $matches[2];
-} elseif (preg_match('#^/asistencias/(delete)/(\d+)$#', $path, $matches)) {
-    $controllerName = 'AsistenciaController';
-    $method = $matches[1];
-    $_GET['id'] = $matches[2];
-} elseif (preg_match('#^/usuarios/(edit|update|delete)/(\d+)$#', $path, $matches)) {
-    $controllerName = 'UsuarioController';
-    $method = $matches[1];
-    $_GET['id'] = $matches[2];
+// Detectar ruta dinámica y extraer parámetros
+if (array_key_exists($ruta, $mapaRutas)) {
+    list($controlador, $metodo) = $mapaRutas[$ruta];
+} elseif (preg_match('#^/cargos/(edit|update|delete)/(\d+)$#', $ruta, $coincidencias)) {
+    $controlador = 'CargoController';
+    $metodo = $coincidencias[1];
+    $_GET['id'] = $coincidencias[2];
+} elseif (preg_match('#^/empleados/(edit|update|delete)/(\d+)$#', $ruta, $coincidencias)) {
+    $controlador = 'EmpleadoController';
+    $metodo = $coincidencias[1];
+    $_GET['id'] = $coincidencias[2];
+} elseif (preg_match('#^/asistencias/(delete)/(\d+)$#', $ruta, $coincidencias)) {
+    $controlador = 'AsistenciaController';
+    $metodo = $coincidencias[1];
+    $_GET['id'] = $coincidencias[2];
+} elseif (preg_match('#^/usuarios/(edit|update|delete)/(\d+)$#', $ruta, $coincidencias)) {
+    $controlador = 'UsuarioController';
+    $metodo = $coincidencias[1];
+    $_GET['id'] = $coincidencias[2];
 } else {
     http_response_code(404);
-    echo '404 Not Found';
+    echo '404 No Encontrado';
     exit;
 }
 
-// Verificación de acceso
-function isAdmin()
+// Función para verificar si el usuario es administrador
+function esAdministrador()
 {
     return isset($_SESSION['user_rol']) && $_SESSION['user_rol'] === 'Administrador';
 }
 
-function isLoggedIn()
+// Función para verificar si el usuario está autenticado
+function estaLogueado()
 {
     return isset($_SESSION['user_id']);
 }
 
-$requiresLogin = !in_array($path, $publicRoutes);
-$requiresAdmin = in_array($path, $adminRoutes) || array_filter($adminPrefixRoutes, fn($prefix) => str_starts_with($path, $prefix));
+// Definir si la ruta requiere login o admin
+$requiereLogin = !in_array($ruta, $rutasPublicas);
+$requiereAdmin = in_array($ruta, $rutasAdmin) || array_filter($prefijosRutasAdmin, fn($prefijo) => str_starts_with($ruta, $prefijo));
 
-// Protección por login y rol
-if ($requiresAdmin && !isAdmin()) {
+// Proteger rutas según permisos
+if ($requiereAdmin && !esAdministrador()) {
     header('Location: /login');
     exit;
-} elseif ($requiresLogin && !isLoggedIn()) {
+} elseif ($requiereLogin && !estaLogueado()) {
     header('Location: /login');
     exit;
 }
 
-// Carga del controlador
-$controllerFile = __DIR__ . "/../app/controllers/{$controllerName}.php";
+// Cargar el controlador correspondiente
+$archivoControlador = __DIR__ . "/../app/controllers/{$controlador}.php";
 
-if (file_exists($controllerFile)) {
-    require_once $controllerFile;
-    $controller = new $controllerName($db);
+if (file_exists($archivoControlador)) {
+    require_once $archivoControlador;
+    $instanciaControlador = new $controlador($db);
 
-    // Ejecutar método del controlador
+    // Ejecutar método con parámetro id o con datos POST/GET según corresponda
     if (isset($_GET['id'])) {
-        $controller->$method($_GET['id']);
+        $instanciaControlador->$metodo($_GET['id']);
     } else {
-        $controller->$method($_SERVER['REQUEST_METHOD'] === 'POST' ? $_POST : []);
+        $datos = $_SERVER['REQUEST_METHOD'] === 'POST' ? $_POST : [];
+        $instanciaControlador->$metodo($datos);
     }
 } else {
     http_response_code(500);

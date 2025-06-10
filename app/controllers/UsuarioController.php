@@ -9,199 +9,150 @@ class UsuarioController
         $this->db = $db;
         $this->usuarioModel = new Usuario($db);
 
-        if (!$this->isLoggedIn()) {
+        if (!$this->estaLogueado()) {
             header('Location: /login');
             exit;
         }
     }
 
-    // Lista todos los usuarios
+    // Mostrar todos los usuarios
     public function index()
     {
         $usuarios = $this->usuarioModel->obtenerTodos();
 
-        $data = [
-            'title' => 'Listado de Usuarios',
+        $datos = [
+            'titulo' => 'Listado de Usuarios',
             'usuarios' => $usuarios,
-            'success_message' => $_SESSION['success_message'] ?? null,
-            'error_message' => $_SESSION['error_message'] ?? null,
-            'current_page' => 'usuarios'
+            'mensaje_exito' => $_SESSION['mensaje_exito'] ?? null,
+            'mensaje_error' => $_SESSION['mensaje_error'] ?? null,
+            'pagina_actual' => 'usuarios'
         ];
 
-        unset($_SESSION['success_message'], $_SESSION['error_message']);
+        unset($_SESSION['mensaje_exito'], $_SESSION['mensaje_error']);
 
-        $view = 'admin/usuarios/index.php';
+        $vista = 'admin/usuarios/index.php';
         require_once __DIR__ . '/../views/include/layout.php';
     }
 
-    // Muestra el formulario de creación
+    // Mostrar formulario creación
     public function create()
     {
-        $data = [
-            'title' => 'Registrar Nuevo Usuario',
+        $datos = [
+            'titulo' => 'Registrar Nuevo Usuario',
             'usuario' => new stdClass(),
-            'errors' => [],
-            'form_action' => '/usuarios/store',
-            'current_page' => 'usuarios'
+            'errores' => [],
+            'accion_formulario' => '/usuarios/store',
+            'pagina_actual' => 'usuarios'
         ];
 
-        $view = 'admin/usuarios/create.php';
+        $vista = 'admin/usuarios/create.php';
         require_once __DIR__ . '/../views/include/layout.php';
     }
 
-    // Guarda un nuevo usuario
+    // Guardar usuario nuevo
     public function store()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $inputData = [
+            $entrada = [
                 'nombre' => trim($_POST['nombre']),
                 'email' => trim($_POST['email']),
                 'password' => trim($_POST['password']),
                 'rol' => trim($_POST['rol'] ?? 'Usuario'),
+                // 'estado' no se pasa, se asigna en el modelo como 'activo'
             ];
 
-            $errores = [];
+            $resultado = $this->usuarioModel->registrar($entrada);
 
-            // Validar nombre
-            if (empty($inputData['nombre'])) {
-                $errores['nombre'] = 'El nombre es obligatorio.';
-            }
-
-            // Validar email
-            if (empty($inputData['email'])) {
-                $errores['email'] = 'El correo es obligatorio.';
-            } elseif (!filter_var($inputData['email'], FILTER_VALIDATE_EMAIL)) {
-                $errores['email'] = 'El correo no es válido.';
-            } elseif ($this->usuarioModel->existeEmail($inputData['email'])) {
-                $errores['email'] = 'Este correo ya está registrado.';
-            }
-
-            // Validar password
-            if (strlen($inputData['password']) < 6) {
-                $errores['password'] = 'La contraseña debe tener al menos 6 caracteres.';
-            }
-
-            // Validar rol (sólo Administrador o Usuario)
-            if (!in_array($inputData['rol'], ['Administrador', 'Usuario'])) {
-                $inputData['rol'] = 'Usuario';
-            }
-
-            if (empty($errores)) {
-                $inputData['estado'] = 'activo';
-                $this->usuarioModel->registrar($inputData);
-                $_SESSION['success_message'] = 'Usuario registrado correctamente';
+            if ($resultado['exito']) {
+                $_SESSION['mensaje_exito'] = 'Usuario registrado correctamente.';
                 header('Location: /usuarios');
                 exit;
             } else {
-                $data = [
-                    'title' => 'Registrar Nuevo Usuario',
-                    'usuario' => (object) $inputData,
-                    'errors' => $errores,
-                    'form_action' => '/usuarios/store',
-                    'current_page' => 'usuarios'
+                // En caso de errores los mostramos en el formulario
+                $datos = [
+                    'titulo' => 'Registrar Nuevo Usuario',
+                    'usuario' => (object) $entrada,
+                    'errores' => $resultado['errores'],
+                    'accion_formulario' => '/usuarios/guardar',
+                    'pagina_actual' => 'usuarios'
                 ];
 
-                $view = 'admin/usuarios/create.php';
+                $vista = 'admin/usuarios/create.php';
                 require_once __DIR__ . '/../views/include/layout.php';
             }
         }
     }
 
-    // Mostrar formulario para editar usuario
+    // Mostrar formulario edición
     public function edit($id)
     {
         $usuario = $this->usuarioModel->obtenerPorId($id);
 
         if (!$usuario) {
-            $_SESSION['error_message'] = 'Usuario no encontrado';
+            $_SESSION['mensaje_error'] = 'Usuario no encontrado.';
             header('Location: /usuarios');
             exit;
         }
 
-        $data = [
-            'title' => 'Editar Usuario',
+        $datos = [
+            'titulo' => 'Editar Usuario',
             'usuario' => $usuario,
-            'errors' => [],
-            'form_action' => "/usuarios/update/$id",
-            'current_page' => 'usuarios'
+            'errores' => [],
+            'accion_formulario' => "/usuarios/update/$id",
+            'pagina_actual' => 'usuarios'
         ];
 
-        $view = 'admin/usuarios/edit.php';
+        $vista = 'admin/usuarios/edit.php';
         require_once __DIR__ . '/../views/include/layout.php';
     }
 
-    // Actualiza usuario (sin cambiar contraseña aquí)
+    // Actualizar usuario
     public function update($id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $inputData = [
+            $entrada = [
                 'nombre' => trim($_POST['nombre']),
                 'email' => trim($_POST['email']),
                 'rol' => trim($_POST['rol']),
                 'estado' => trim($_POST['estado']),
             ];
 
-            $errores = [];
+            $resultado = $this->usuarioModel->actualizar($id, $entrada);
 
-            // Validaciones básicas
-            if (empty($inputData['nombre'])) {
-                $errores['nombre'] = 'El nombre es obligatorio.';
-            }
-
-            if (empty($inputData['email'])) {
-                $errores['email'] = 'El correo es obligatorio.';
-            } elseif (!filter_var($inputData['email'], FILTER_VALIDATE_EMAIL)) {
-                $errores['email'] = 'El correo no es válido.';
-            } else {
-                // Validar que el email no esté registrado por otro usuario
-                $usuarioExistente = $this->usuarioModel->obtenerPorId($id);
-                if ($usuarioExistente && $usuarioExistente->email !== $inputData['email']) {
-                    if ($this->usuarioModel->existeEmail($inputData['email'])) {
-                        $errores['email'] = 'Este correo ya está registrado.';
-                    }
-                }
-            }
-
-            if (!in_array($inputData['rol'], ['Administrador', 'Usuario'])) {
-                $inputData['rol'] = 'Usuario';
-            }
-
-            if (!in_array($inputData['estado'], ['activo', 'inactivo'])) {
-                $inputData['estado'] = 'activo';
-            }
-
-            if (empty($errores)) {
-                $this->usuarioModel->actualizar($id, $inputData);
-                $_SESSION['success_message'] = 'Usuario actualizado correctamente';
+            if ($resultado['exito']) {
+                $_SESSION['mensaje_exito'] = 'Usuario actualizado correctamente.';
                 header('Location: /usuarios');
                 exit;
             } else {
-                $usuario = (object) $inputData;
-                $usuario->id = $id;
-                $data = [
-                    'title' => 'Editar Usuario',
-                    'usuario' => $usuario,
-                    'errors' => $errores,
-                    'form_action' => "/usuarios/update/$id",
-                    'current_page' => 'usuarios'
+                $entrada['id'] = $id;
+                $datos = [
+                    'titulo' => 'Editar Usuario',
+                    'usuario' => (object) $entrada,
+                    'errores' => $resultado['errores'],
+                    'accion_formulario' => "/usuarios/update/$id",
+                    'pagina_actual' => 'usuarios'
                 ];
-                $view = 'admin/usuarios/edit.php';
+
+                $vista = 'admin/usuarios/edit.php';
                 require_once __DIR__ . '/../views/include/layout.php';
             }
         }
     }
 
-    // Cambiar estado a inactivo (eliminar usuario "lógicamente")
+    // Eliminar usuario (estado inactivo)
     public function delete($id)
     {
-        $this->usuarioModel->eliminar($id);
-        $_SESSION['success_message'] = 'Usuario eliminado correctamente';
+        if ($this->usuarioModel->eliminar($id)) {
+            $_SESSION['mensaje_exito'] = 'Usuario eliminado correctamente.';
+        } else {
+            $_SESSION['mensaje_error'] = 'No se pudo eliminar el usuario.';
+        }
+
         header('Location: /usuarios');
         exit;
     }
 
-    // Verifica si el usuario está logueado
-    private function isLoggedIn()
+    private function estaLogueado()
     {
         return isset($_SESSION['user_id']);
     }

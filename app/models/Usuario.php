@@ -3,33 +3,103 @@
 class Usuario
 {
     private $db;
-    private $table_name = "usuarios";
+    private $tabla = "usuarios";
 
     public function __construct($db)
     {
         $this->db = $db;
     }
 
-    // Registrar nuevo usuario
-    public function registrar($data)
+    public function obtenerTodos()
     {
-        $this->db->query('
-            INSERT INTO ' . $this->table_name . ' (nombre, email, password, rol, estado)
+        $this->db->query("SELECT * FROM {$this->tabla} ORDER BY id DESC");
+        return $this->db->resultSet();
+    }
+
+    public function obtenerPorId($id)
+    {
+        $this->db->query("SELECT * FROM {$this->tabla} WHERE id = :id");
+        $this->db->bind(':id', $id);
+        return $this->db->single();
+    }
+
+    public function registrar($datos)
+    {
+        $errores = $this->validarDatos($datos);
+        if ($errores !== true) {
+            return ['exito' => false, 'errores' => $errores];
+        }
+
+        if ($this->emailExiste($datos['email'])) {
+            return ['exito' => false, 'errores' => ['email' => 'Ya existe un usuario con ese correo.']];
+        }
+
+        $this->db->query("
+            INSERT INTO {$this->tabla} (nombre, email, password, rol, estado)
             VALUES (:nombre, :email, :password, :rol, :estado)
-        ');
-        $this->db->bind(':nombre', $data['nombre']);
-        $this->db->bind(':email', $data['email']);
-        $this->db->bind(':password', password_hash($data['password'], PASSWORD_DEFAULT));
-        $this->db->bind(':rol', $data['rol'] ?? 'Usuario');
+        ");
+        $this->db->bind(':nombre', $datos['nombre']);
+        $this->db->bind(':email', $datos['email']);
+        $this->db->bind(':password', password_hash($datos['password'], PASSWORD_DEFAULT));
+        $this->db->bind(':rol', $datos['rol'] ?? 'Usuario');
         $this->db->bind(':estado', 'activo');
 
+        $exito = $this->db->execute();
+        return [
+            'exito' => $exito,
+            'id' => $exito ? $this->db->lastInsertId() : null
+        ];
+    }
+
+    public function actualizar($id, $datos)
+    {
+        $usuario = $this->obtenerPorId($id);
+        if (!$usuario) {
+            return ['exito' => false, 'errores' => ['general' => 'Usuario no encontrado.']];
+        }
+
+        $errores = $this->validarDatos($datos, false);
+        if ($errores !== true) {
+            return ['exito' => false, 'errores' => $errores];
+        }
+
+        if ($this->emailExiste($datos['email'], $id)) {
+            return ['exito' => false, 'errores' => ['email' => 'Ya existe otro usuario con ese correo.']];
+        }
+
+        $this->db->query("
+            UPDATE {$this->tabla}
+            SET nombre = :nombre, email = :email, rol = :rol, estado = :estado
+            WHERE id = :id
+        ");
+        $this->db->bind(':nombre', $datos['nombre']);
+        $this->db->bind(':email', $datos['email']);
+        $this->db->bind(':rol', $datos['rol']);
+        $this->db->bind(':estado', $datos['estado']);
+        $this->db->bind(':id', $id);
+
+        return ['exito' => $this->db->execute()];
+    }
+
+    public function actualizarPassword($id, $nuevaPassword)
+    {
+        $hash = password_hash($nuevaPassword, PASSWORD_DEFAULT);
+        $this->db->query("UPDATE {$this->tabla} SET password = :password WHERE id = :id");
+        $this->db->bind(':password', $hash);
+        $this->db->bind(':id', $id);
         return $this->db->execute();
     }
 
-    // Iniciar sesión
-    public function login($email, $password)
+    public function eliminar($id)
     {
-        $this->db->query('SELECT * FROM ' . $this->table_name . ' WHERE email = :email AND estado = "activo" LIMIT 1');
+        $this->db->query("UPDATE {$this->tabla} SET estado = 'inactivo' WHERE id = :id");
+        $this->db->bind(':id', $id);
+        return $this->db->execute();
+    }
+
+    public function iniciarSesion($email, $password)
+    {
+        $this->db->query("SELECT * FROM {$this->tabla} WHERE email = :email AND estado = 'activo' LIMIT 1");
         $this->db->bind(':email', $email);
         $usuario = $this->db->single();
 
@@ -40,73 +110,59 @@ class Usuario
         return false;
     }
 
-    // Verificar si ya existe un correo
-    public function existeEmail($email)
+    public function emailExiste($email, $excluirId = null)
     {
-        $this->db->query('SELECT id FROM ' . $this->table_name . ' WHERE email = :email');
+        $consulta = "SELECT id FROM {$this->tabla} WHERE email = :email";
+        if ($excluirId !== null) {
+            $consulta .= " AND id != :id";
+        }
+
+        $this->db->query($consulta);
         $this->db->bind(':email', $email);
+        if ($excluirId !== null) {
+            $this->db->bind(':id', $excluirId);
+        }
+
         return $this->db->rowCount() > 0;
     }
 
-    // Obtener usuario por ID
-    public function obtenerPorId($id)
+    public function contarUsuarios()
     {
-        $this->db->query('SELECT * FROM ' . $this->table_name . ' WHERE id = :id');
-        $this->db->bind(':id', $id);
-        return $this->db->single();
-    }
-
-    // Obtener todos los usuarios
-    public function obtenerTodos()
-    {
-        $this->db->query('SELECT * FROM ' . $this->table_name . ' ORDER BY id DESC');
-        return $this->db->resultSet();
-    }
-
-    // Actualizar usuario (sin cambiar password)
-    public function actualizar($id, $data)
-    {
-        $this->db->query('
-            UPDATE ' . $this->table_name . '
-            SET nombre = :nombre, email = :email, rol = :rol, estado = :estado
-            WHERE id = :id
-        ');
-        $this->db->bind(':nombre', $data['nombre']);
-        $this->db->bind(':email', $data['email']);
-        $this->db->bind(':rol', $data['rol']);
-        $this->db->bind(':estado', $data['estado']);
-        $this->db->bind(':id', $id);
-
-        return $this->db->execute();
-    }
-
-    // Actualizar contraseña
-    public function updatePassword($id, $new_hashed_password)
-    {
-        $this->db->query('
-            UPDATE ' . $this->table_name . '
-            SET password = :password
-            WHERE id = :id
-        ');
-        $this->db->bind(':password', $new_hashed_password);
-        $this->db->bind(':id', $id);
-
-        return $this->db->execute();
-    }
-
-    // Eliminar usuario (desactiva el estado)
-    public function eliminar($id)
-    {
-        $this->db->query('UPDATE ' . $this->table_name . ' SET estado = "inactivo" WHERE id = :id');
-        $this->db->bind(':id', $id);
-        return $this->db->execute();
-    }
-
-    // Obtener total de usuarios
-    public function obtenerTotal()
-    {
-        $this->db->query('SELECT COUNT(*) as total FROM ' . $this->table_name);
+        $this->db->query("SELECT COUNT(*) as total FROM {$this->tabla}");
         $resultado = $this->db->single();
         return $resultado->total;
+    }
+
+    public function validarDatos($datos, $validarPassword = true)
+    {
+        $errores = [];
+
+        if (empty($datos['nombre'])) {
+            $errores['nombre'] = 'El nombre es obligatorio.';
+        } elseif (strlen($datos['nombre']) > 100) {
+            $errores['nombre'] = 'El nombre no debe exceder los 100 caracteres.';
+        }
+
+        if (empty($datos['email'])) {
+            $errores['email'] = 'El correo es obligatorio.';
+        } elseif (!filter_var($datos['email'], FILTER_VALIDATE_EMAIL)) {
+            $errores['email'] = 'El correo no es válido.';
+        } elseif (strlen($datos['email']) > 150) {
+            $errores['email'] = 'El correo no debe exceder los 150 caracteres.';
+        }
+
+        if ($validarPassword && (empty($datos['password']) || strlen($datos['password']) < 6)) {
+            $errores['password'] = 'La contraseña debe tener al menos 6 caracteres.';
+        }
+
+        if (!empty($datos['rol']) && !in_array($datos['rol'], ['Administrador', 'Usuario'])) {
+            $errores['rol'] = 'Rol no válido.';
+        }
+
+        if (!empty($datos['estado']) && !in_array($datos['estado'], ['activo', 'inactivo'])) {
+            $errores['estado'] = 'Estado no válido.';
+        }
+
+        return empty($errores) ? true : $errores;
     }
 }

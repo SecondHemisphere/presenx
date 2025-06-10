@@ -9,7 +9,7 @@ class MiCuentaController
         $this->db = $db;
         $this->usuarioModel = new Usuario($db);
 
-        if (!$this->isLoggedIn()) {
+        if (!$this->estaLogueado()) {
             header('Location: /login');
             exit;
         }
@@ -20,20 +20,20 @@ class MiCuentaController
     {
         $usuario = $this->usuarioModel->obtenerPorId($_SESSION['user_id']);
 
-        $data = [
-            'title' => 'Mi Cuenta',
+        $datos = [
+            'titulo' => 'Mi Cuenta',
             'usuario' => $usuario,
             'errores' => $_SESSION['errores'] ?? [],
-            'success_message' => $_SESSION['success_message'] ?? null,
+            'mensaje_exito' => $_SESSION['mensaje_exito'] ?? null,
         ];
 
-        unset($_SESSION['errores'], $_SESSION['success_message']);
+        unset($_SESSION['errores'], $_SESSION['mensaje_exito']);
 
-        $view = 'mi-cuenta.php';
+        $vista = 'mi-cuenta.php';
         require_once __DIR__ . '/../views/include/layout.php';
     }
 
-    // Actualiza nombre y email
+    // Actualizar nombre y correo electrónico
     public function actualizar()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -52,14 +52,13 @@ class MiCuentaController
                 $errores['email'] = 'El correo electrónico es obligatorio';
             } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $errores['email'] = 'El correo electrónico no es válido';
-            } elseif ($this->usuarioModel->existeEmail($email, $_SESSION['user_id'])) {
-                // El método existeEmail debe aceptar un parámetro para excluir al usuario actual
+            } elseif ($this->usuarioModel->emailExiste($email, $_SESSION['user_id'])) {
                 $errores['email'] = 'Este correo ya está registrado';
             }
 
             if (!empty($errores)) {
                 $_SESSION['errores'] = $errores;
-                $_SESSION['old_data'] = ['nombre' => $nombre, 'email' => $email];
+                $_SESSION['datos_anteriores'] = ['nombre' => $nombre, 'email' => $email];
                 header('Location: /mi-cuenta');
                 exit;
             }
@@ -69,7 +68,7 @@ class MiCuentaController
                 'email' => $email,
             ]);
 
-            $_SESSION['success_message'] = 'Datos actualizados correctamente';
+            $_SESSION['mensaje_exito'] = 'Datos actualizados correctamente';
             header('Location: /mi-cuenta');
             exit;
         }
@@ -79,9 +78,9 @@ class MiCuentaController
     public function cambiarContrasena()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $actual = $_POST['actual_password'] ?? '';
-            $nueva = $_POST['nueva_password'] ?? '';
-            $confirmar = $_POST['confirmar_password'] ?? '';
+            $actual = $_POST['password_actual'] ?? '';
+            $nueva = $_POST['password_nueva'] ?? '';
+            $confirmar = $_POST['password_confirmar'] ?? '';
             $errores = [];
 
             $usuario = $this->usuarioModel->obtenerPorId($_SESSION['user_id']);
@@ -89,11 +88,11 @@ class MiCuentaController
             if (empty($actual) || empty($nueva) || empty($confirmar)) {
                 $errores['password'] = 'Todos los campos de contraseña son obligatorios';
             } elseif (!password_verify($actual, $usuario->password)) {
-                $errores['actual_password'] = 'La contraseña actual es incorrecta';
+                $errores['password_actual'] = 'La contraseña actual es incorrecta';
             } elseif (strlen($nueva) < 8) {
-                $errores['nueva_password'] = 'La nueva contraseña debe tener al menos 8 caracteres';
+                $errores['password_nueva'] = 'La nueva contraseña debe tener al menos 8 caracteres';
             } elseif ($nueva !== $confirmar) {
-                $errores['confirmar_password'] = 'Las contraseñas no coinciden';
+                $errores['password_confirmar'] = 'Las contraseñas no coinciden';
             }
 
             if (!empty($errores)) {
@@ -107,13 +106,13 @@ class MiCuentaController
                 'password' => password_hash($nueva, PASSWORD_DEFAULT),
             ]);
 
-            $_SESSION['success_message'] = 'Contraseña cambiada correctamente';
+            $_SESSION['mensaje_exito'] = 'Contraseña cambiada correctamente';
             header('Location: /mi-cuenta');
             exit;
         }
     }
 
-    private function isLoggedIn()
+    private function estaLogueado()
     {
         return isset($_SESSION['user_id']);
     }

@@ -6,6 +6,8 @@
 <body>
     <!-- Navegación -->
     <?php
+    // Si no es página de login, carga la barra de navegación del sistema
+    // Si es página de login, carga barra de navegación pública
     if (!($esLogin ?? false)) {
         require_once __DIR__ . '/navbar_sistema.php';
     } else {
@@ -14,28 +16,30 @@
     ?>
 
     <?php if (!($esLogin ?? false)): ?>
-        <!-- Layout Principal -->
+        <!-- Layout principal para páginas internas -->
         <div class="layout-principal">
-            <!-- Barra Lateral -->
-            <?php if (empty($hideSidebar)): ?>
+            <!-- Barra lateral -->
+            <?php if (empty($ocultarSidebar)): ?>
                 <aside class="sidebar">
                     <?php require_once __DIR__ . '/sidebar.php'; ?>
                 </aside>
             <?php endif; ?>
-            <!-- Contenido Principal -->
+
+            <!-- Contenido principal -->
             <main class="contenedor-principal">
             <?php else: ?>
-                <!-- Layout simplificado para login -->
+                <!-- Layout simplificado para página de login -->
                 <main class="contenedor-principal-login">
                 <?php endif; ?>
 
-                <!-- Vista -->
+                <!-- Inclusión de la vista dinámica -->
                 <?php
-                if (isset($view)) {
-                    if (isset($data)) extract($data);
-                    require_once __DIR__ . '/../' . $view;
+                if (isset($vista)) {
+                    // Extraer datos para que estén disponibles como variables en la vista
+                    if (isset($datos)) extract($datos);
+                    require_once __DIR__ . '/../' . $vista;
                 } else {
-                    echo "<p>Error: vista no especificada.</p>";
+                    echo "<p>Error: no se especificó la vista.</p>";
                 }
                 ?>
 
@@ -46,8 +50,9 @@
         </main>
     <?php endif; ?>
 
-    <!-- Footer -->
+    <!-- Pie de página -->
     <?php
+    // Carga pie de página según tipo de página (login o sistema)
     if (!($esLogin ?? false)) {
         require_once __DIR__ . '/footer_sistema.php';
     } else {
@@ -55,7 +60,7 @@
     }
     ?>
 
-    <!-- Scripts -->
+    <!-- Scripts JS -->
     <script src="/assets/js/alerta.js"></script>
 </body>
 

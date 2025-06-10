@@ -1,14 +1,14 @@
 <?php
-// Lógica de paginación
+// Variables paginación
 $por_pagina = isset($_GET['por_pagina']) ? (int) $_GET['por_pagina'] : 10;
-$total_registros = count($data['usuarios']);
+$total_registros = count($datos['usuarios']);
 $pagina_actual = isset($_GET['pagina']) ? max(1, (int)$_GET['pagina']) : 1;
-$total_paginas = ceil($total_registros / $por_pagina);
+$total_paginas = (int) ceil($total_registros / $por_pagina);
 
 $offset = ($pagina_actual - 1) * $por_pagina;
-$registros_paginados = array_slice($data['usuarios'], $offset, $por_pagina);
+$registros_paginados = array_slice($datos['usuarios'], $offset, $por_pagina);
 
-$inicio = $offset + 1;
+$inicio = $total_registros > 0 ? $offset + 1 : 0;
 $fin = min($total_registros, $pagina_actual * $por_pagina);
 ?>
 
@@ -16,20 +16,21 @@ $fin = min($total_registros, $pagina_actual * $por_pagina);
 
     <!-- Alerta de éxito o error -->
     <?php
-    $mensaje_exito = $data['success_message'] ?? '';
-    $mensaje_error = $data['error_message'] ?? '';
+    // Usar las variables correctas de mensajes (mensaje_exito y mensaje_error según controlador)
+    $mensaje_exito = $datos['mensaje_exito'] ?? '';
+    $mensaje_error = $datos['mensaje_error'] ?? '';
     include __DIR__ . '/../../components/alerta-flash.php';
     ?>
 
-    <!-- Modal de confirmación para eliminar usuarios -->
+    <!-- Modal confirmación eliminación -->
     <?php $mensaje_confirmacion = "¿Estás seguro de que deseas eliminar este usuario?"; ?>
     <?php include __DIR__ . '/../../components/modal-confirmacion.php'; ?>
 
     <!-- Título principal -->
-    <h1><?= htmlspecialchars($data['title']) ?></h1>
+    <h1><?= htmlspecialchars($datos['titulo']) ?></h1>
     <hr>
 
-    <!-- Encabezado: control de entradas y botón para nuevo usuario-->
+    <!-- Encabezado con controles -->
     <?php
     $ruta_index = '/usuarios';
     $ruta_crear = '/usuarios/create';
@@ -38,7 +39,7 @@ $fin = min($total_registros, $pagina_actual * $por_pagina);
     include __DIR__ . '/../../components/encabezado-acciones.php';
     ?>
 
-    <!-- Tabla de usuarios -->
+    <!-- Tabla usuarios -->
     <div class="contenedor-tabla">
         <?php
         $columnas = [
@@ -59,6 +60,3 @@ $fin = min($total_registros, $pagina_actual * $por_pagina);
     <!-- Controles de paginación -->
     <?php include __DIR__ . '/../../components/paginacion.php'; ?>
 </div>
-
-</body>
-</html>
