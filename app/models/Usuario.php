@@ -3,7 +3,6 @@
 class Usuario
 {
     private $db;
-    private $tabla = "usuarios";
 
     public function __construct($db)
     {
@@ -12,13 +11,13 @@ class Usuario
 
     public function obtenerTodos()
     {
-        $this->db->query("SELECT * FROM {$this->tabla} ORDER BY id DESC");
+        $this->db->query("SELECT * FROM usuarios ORDER BY id DESC");
         return $this->db->resultSet();
     }
 
     public function obtenerPorId($id)
     {
-        $this->db->query("SELECT * FROM {$this->tabla} WHERE id = :id");
+        $this->db->query("SELECT * FROM usuarios WHERE id = :id");
         $this->db->bind(':id', $id);
         return $this->db->single();
     }
@@ -35,7 +34,7 @@ class Usuario
         }
 
         $this->db->query("
-            INSERT INTO {$this->tabla} (nombre, email, password, rol, estado)
+            INSERT INTO usuarios (nombre, email, password, rol, estado)
             VALUES (:nombre, :email, :password, :rol, :estado)
         ");
         $this->db->bind(':nombre', $datos['nombre']);
@@ -68,7 +67,7 @@ class Usuario
         }
 
         $this->db->query("
-            UPDATE {$this->tabla}
+            UPDATE usuarios
             SET nombre = :nombre, email = :email, rol = :rol, estado = :estado
             WHERE id = :id
         ");
@@ -84,7 +83,7 @@ class Usuario
     public function actualizarPassword($id, $nuevaPassword)
     {
         $hash = password_hash($nuevaPassword, PASSWORD_DEFAULT);
-        $this->db->query("UPDATE {$this->tabla} SET password = :password WHERE id = :id");
+        $this->db->query("UPDATE usuarios SET password = :password WHERE id = :id");
         $this->db->bind(':password', $hash);
         $this->db->bind(':id', $id);
         return $this->db->execute();
@@ -92,14 +91,14 @@ class Usuario
 
     public function eliminar($id)
     {
-        $this->db->query("UPDATE {$this->tabla} SET estado = 'inactivo' WHERE id = :id");
+        $this->db->query("UPDATE usuarios SET estado = 'inactivo' WHERE id = :id");
         $this->db->bind(':id', $id);
         return $this->db->execute();
     }
 
     public function iniciarSesion($email, $password)
     {
-        $this->db->query("SELECT * FROM {$this->tabla} WHERE email = :email AND estado = 'activo' LIMIT 1");
+        $this->db->query("SELECT * FROM usuarios WHERE email = :email AND estado = 'activo' LIMIT 1");
         $this->db->bind(':email', $email);
         $usuario = $this->db->single();
 
@@ -112,7 +111,7 @@ class Usuario
 
     public function emailExiste($email, $excluirId = null)
     {
-        $consulta = "SELECT id FROM {$this->tabla} WHERE email = :email";
+        $consulta = "SELECT id FROM usuarios WHERE email = :email";
         if ($excluirId !== null) {
             $consulta .= " AND id != :id";
         }
@@ -128,7 +127,7 @@ class Usuario
 
     public function contarUsuarios()
     {
-        $this->db->query("SELECT COUNT(*) as total FROM {$this->tabla}");
+        $this->db->query("SELECT COUNT(*) as total FROM usuarios");
         $resultado = $this->db->single();
         return $resultado->total;
     }

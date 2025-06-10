@@ -63,8 +63,8 @@ $mapaRutas = [
     '/' => ['HomeController', 'index'],
     '/storeAsistencia' => ['AsistenciaController', 'storeUsuario'],
 
-    '/login' => ['AutenticacionController', 'mostrarLogin'],
-    '/register' => ['AutenticacionController', 'mostrarRegistro'],
+    '/login' => ['AutenticacionController', 'showLogin'],
+    '/register' => ['AutenticacionController', 'showRegister'],
     '/auth/login' => ['AutenticacionController', 'login'],
     '/auth/register' => ['AutenticacionController', 'register'],
     '/logout' => ['AutenticacionController', 'logout'],

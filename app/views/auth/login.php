@@ -10,10 +10,10 @@
     <?php endif; ?>
 
     <!-- Mensaje de éxito -->
-    <?php if (isset($_SESSION['success'])): ?>
+    <?php if (isset($_SESSION['exito'])): ?>
         <div class="auth-mensaje auth-exito">
-            <?= $_SESSION['success'];
-            unset($_SESSION['success']); ?>
+            <?= $_SESSION['exito'];
+            unset($_SESSION['exito']); ?>
         </div>
     <?php endif; ?>
 
@@ -21,12 +21,12 @@
     <form id="loginForm" action="/auth/login" method="POST" class="auth-formulario">
         <div class="auth-grupo">
             <label for="email">Correo electrónico</label>
-            <input type="email" id="email" name="email" required>
+            <input type="email" id="email" name="email" placeholder="ejemplo@correo.com" required>
         </div>
 
         <div class="auth-grupo">
             <label for="password">Contraseña</label>
-            <input type="password" id="password" name="password" required>
+            <input type="password" id="password" name="password" placeholder="Tu contraseña" required>
         </div>
 
         <button type="submit" class="auth-boton auth-boton-principal">Ingresar</button>
@@ -37,5 +37,3 @@
         <a href="/register" class="auth-enlace">Regístrate aquí</a>
     </p>
 </div>
-
-<script src="/assets/js/auth.js"></script>

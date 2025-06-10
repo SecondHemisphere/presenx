@@ -10,10 +10,10 @@
     <?php endif; ?>
 
     <!-- Mensaje de éxito -->
-    <?php if (isset($_SESSION['success'])): ?>
+    <?php if (isset($_SESSION['exito'])): ?>
         <div class="auth-mensaje auth-exito">
-            <?= $_SESSION['success'];
-            unset($_SESSION['success']); ?>
+            <?= $_SESSION['exito'];
+            unset($_SESSION['exito']); ?>
         </div>
     <?php endif; ?>
 
@@ -48,5 +48,3 @@
         <a href="/login" class="auth-enlace">Inicia Sesión</a>
     </p>
 </div>
-
-<script src="/assets/js/auth.js"></script>
