@@ -33,7 +33,7 @@ class EmpleadoController
 
         unset($_SESSION['success_message'], $_SESSION['error_message']);
 
-        $view = __DIR__ . '/../views/empleados/index.php';
+        $view = 'admin/empleados/index.php';
         require_once __DIR__ . '/../views/include/layout.php';
     }
 
@@ -50,7 +50,7 @@ class EmpleadoController
             'cargos' => $cargos,
         ];
 
-        $view = __DIR__ . '/../views/empleados/create.php';
+        $view = 'admin/empleados/create.php';
         require_once __DIR__ . '/../views/include/layout.php';
     }
 
@@ -75,7 +75,7 @@ class EmpleadoController
                     'current_page' => 'empleados'
                 ];
 
-                $view = __DIR__ . '/../views/empleados/create.php';
+                $view = 'admin/empleados/create.php';
                 require_once __DIR__ . '/../views/include/layout.php';
             }
         }
@@ -102,7 +102,7 @@ class EmpleadoController
             'cargos' => $cargos,
         ];
 
-        $view = __DIR__ . '/../views/empleados/edit.php';
+        $view = 'admin/empleados/edit.php';
         require_once __DIR__ . '/../views/include/layout.php';
     }
 
@@ -129,7 +129,7 @@ class EmpleadoController
                     'current_page' => 'empleados'
                 ];
 
-                $view = __DIR__ . '/../views/empleados/edit.php';
+                $view = 'admin/empleados/edit.php';
                 require_once __DIR__ . '/../views/include/layout.php';
             }
         }

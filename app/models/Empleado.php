@@ -26,6 +26,13 @@ class Empleado
         return $this->db->single();
     }
 
+    public function obtenerPorCedula($cedula)
+    {
+        $this->db->query("SELECT * FROM empleados WHERE cedula = :cedula");
+        $this->db->bind(':cedula', $cedula);
+        return $this->db->single();
+    }
+
     public function registrar($datos)
     {
         $validacion = $this->validarDatos($datos);

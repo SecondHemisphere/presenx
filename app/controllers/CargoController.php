@@ -32,7 +32,7 @@ class CargoController
         unset($_SESSION['success_message']);
         unset($_SESSION['error_message']);
 
-        $view = __DIR__ . '/../views/cargos/index.php';
+        $view = 'admin/cargos/index.php';
         require_once __DIR__ . '/../views/include/layout.php';
     }
 
@@ -47,7 +47,7 @@ class CargoController
             'current_page' => 'cargos'
         ];
 
-        $view = __DIR__ . '/../views/cargos/create.php';
+        $view = 'admin/cargos/create.php';
         require_once __DIR__ . '/../views/include/layout.php';
     }
 
@@ -74,8 +74,7 @@ class CargoController
                     'form_action' => '/cargos/store',
                     'current_page' => 'cargos'
                 ];
-
-                $view = __DIR__ . '/../views/cargos/create.php';
+                $view = 'admin/cargos/create.php';
                 require_once __DIR__ . '/../views/include/layout.php';
             }
         }
@@ -100,7 +99,7 @@ class CargoController
             'current_page' => 'cargos'
         ];
 
-        $view = __DIR__ . '/../views/cargos/edit.php';
+        $view = 'admin/cargos/edit.php';
         require_once __DIR__ . '/../views/include/layout.php';
     }
 
@@ -130,7 +129,7 @@ class CargoController
                     'current_page' => 'cargos'
                 ];
 
-                $view = __DIR__ . '/../views/cargos/edit.php';
+                $view = 'admin/cargos/edit.php';
                 require_once __DIR__ . '/../views/include/layout.php';
             }
         }

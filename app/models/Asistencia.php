@@ -32,23 +32,6 @@ class Asistencia
         ];
     }
 
-    public function actualizar($id, $datos)
-    {
-        $this->db->query("
-            UPDATE asistencias SET
-                entrada = :entrada,
-                salida = :salida,
-                estado = :estado
-            WHERE id = :id
-        ");
-        $this->db->bind(':entrada', $datos['entrada'] ?? null);
-        $this->db->bind(':salida', $datos['salida'] ?? null);
-        $this->db->bind(':estado', $datos['estado'] ?? null);
-        $this->db->bind(':id', $id);
-
-        return ['exito' => $this->db->execute()];
-    }
-
     public function eliminar($id)
     {
         $this->db->query("DELETE FROM asistencias WHERE id = :id");
@@ -77,13 +60,10 @@ class Asistencia
         return $this->db->single();
     }
 
-    public function obtenerPorEmpleadoYFecha($idEmpleado, $fecha)
+    public function obtenerPorEmpleadoYFecha($empleadoId, $fecha)
     {
-        $this->db->query("
-            SELECT * FROM asistencias
-            WHERE id_empleado = :id_empleado AND fecha = :fecha
-        ");
-        $this->db->bind(':id_empleado', $idEmpleado);
+        $this->db->query("SELECT * FROM asistencias WHERE id_empleado = :id_empleado AND DATE(entrada) = :fecha LIMIT 1");
+        $this->db->bind(':id_empleado', $empleadoId);
         $this->db->bind(':fecha', $fecha);
         return $this->db->single();
     }
@@ -103,6 +83,43 @@ class Asistencia
         $this->db->bind(':desde', $desde);
         $this->db->bind(':hasta', $hasta);
         return $this->db->resultSet();
+    }
+
+    public function obtenerAsistenciaHoy($id_empleado)
+    {
+        $this->db->query("SELECT * FROM asistencias 
+                      WHERE id_empleado = :id_empleado 
+                        AND DATE(entrada) = CURDATE() 
+                      ORDER BY entrada DESC 
+                      LIMIT 1");
+        $this->db->bind(':id_empleado', $id_empleado);
+        return $this->db->single();
+    }
+
+    public function registrarSalida($id, $hora_salida)
+    {
+        $this->db->query("UPDATE asistencias SET salida = :salida WHERE id = :id");
+        $this->db->bind(':salida', $hora_salida);
+        $this->db->bind(':id', $id);
+
+        if ($this->db->execute()) {
+            return ['exito' => true];
+        } else {
+            return ['exito' => false, 'errores' => ['Error al registrar salida']];
+        }
+    }
+
+    public function actualizarSalida($id, $salida)
+    {
+        $this->db->query("UPDATE asistencias SET salida = :salida WHERE id = :id");
+        $this->db->bind(':salida', $salida);
+        $this->db->bind(':id', $id);
+        $exito = $this->db->execute();
+
+        return [
+            'exito' => $exito,
+            'errores' => $exito ? [] : ['No se pudo actualizar la salida']
+        ];
     }
 
     public function validarDatos($datos)

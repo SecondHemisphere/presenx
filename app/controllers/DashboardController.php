@@ -7,12 +7,14 @@ class DashboardController
     private $empleadoModel;
     private $asistenciaModel;
 
-    // Constructor: inicializa la conexión a la base de datos y el modelo de usuario.
-    // Si el usuario no ha iniciado sesión, lo redirige al login.
     public function __construct($db)
     {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
         $this->db = $db;
-        $this->userModel = new User($db);
+        $this->userModel = new Usuario($db);
         $this->cargoModel = new Cargo($db);
         $this->empleadoModel = new Empleado($db);
         $this->asistenciaModel = new Asistencia($db);
@@ -23,13 +25,10 @@ class DashboardController
         }
     }
 
-    // Muestra la vista del panel de control (dashboard)
     public function index()
     {
-        // Obtiene los datos del usuario actual desde la sesión
-        $user = $this->userModel->getUserById($_SESSION['user_id']);
+        $user = $this->userModel->obtenerPorId($_SESSION['user_id']);
 
-        // Datos que se pasan a la vista
         $data = [
             'title' => 'Dashboard',
             'user' => $user,
@@ -41,15 +40,14 @@ class DashboardController
             'ultimasEntradas' => $this->asistenciaModel->ultimasEntradas()
         ];
 
-        // Variable opcional para marcar el menú activo en la vista
         $current_page = 'dashboard';
+        
+        $view = 'admin/dashboard/index.php';
 
-        // Carga la vista del dashboard dentro del layout general
-        $view = __DIR__ . '/../views/dashboard/index.php';
         require_once __DIR__ . '/../views/include/layout.php';
     }
 
-    // Verifica si el usuario ha iniciado sesión
+
     private function isLoggedIn()
     {
         return isset($_SESSION['user_id']);

@@ -4,14 +4,14 @@
     <h2><?= $data['title'] ?></h2>
 
     <?php
-    // Datos de la asistencia a editar
-    $asistencia = $data['asistencia'];
+    // Datos del usuario a editar
+    $usuario = $data['usuario'];
 
     // Errores de validación (si existen)
     $errors = $errors ?? [];
 
     // Ruta a la que se enviará el formulario
-    $form_action = "/asistencias/update/{$asistencia->id}";
+    $form_action = "/usuarios/update/{$usuario->id}";
 
     // Texto del botón de envío
     $submit_text = "Actualizar";

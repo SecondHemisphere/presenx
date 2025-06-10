@@ -5,10 +5,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // Validación del formulario de login
     if (loginForm) {
         loginForm.addEventListener('submit', function (e) {
-            const usuario = document.getElementById('usuario').value.trim();
-            const password = document.getElementById('password').value.trim();
+            const email = document.getElementById('email')?.value.trim();
+            const password = document.getElementById('password')?.value.trim();
 
-            if (!usuario || !password) {
+            if (!email || !password) {
                 e.preventDefault();
                 mostrarMensaje('Por favor complete todos los campos.', 'error');
             }
@@ -18,14 +18,20 @@ document.addEventListener('DOMContentLoaded', function () {
     // Validación del formulario de registro
     if (registerForm) {
         registerForm.addEventListener('submit', function (e) {
-            const name = document.getElementById('name').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value.trim();
-            const confirmPassword = document.getElementById('confirm_password').value.trim();
+            const name = document.getElementById('nombre')?.value.trim();
+            const email = document.getElementById('email')?.value.trim();
+            const password = document.getElementById('password')?.value.trim();
+            const confirmPassword = document.getElementById('confirm_password')?.value.trim();
 
             if (!name || !email || !password || !confirmPassword) {
                 e.preventDefault();
                 mostrarMensaje('Por favor complete todos los campos.', 'error');
+                return;
+            }
+
+            if (!validarEmail(email)) {
+                e.preventDefault();
+                mostrarMensaje('Ingrese un correo válido.', 'error');
                 return;
             }
 
@@ -35,9 +41,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            if (password.length < 8) {
+            if (password.length < 6) {
                 e.preventDefault();
-                mostrarMensaje('La contraseña debe tener al menos 8 caracteres.', 'error');
+                mostrarMensaje('La contraseña debe tener al menos 6 caracteres.', 'error');
             }
         });
     }
@@ -47,13 +53,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (!mensajeContainer) {
             mensajeContainer = document.createElement('div');
-            mensajeContainer.className = 'auth-mensaje-js auth-mensaje auth-' + tipo;
-            document.querySelector('.auth-contenedor').prepend(mensajeContainer);
+            mensajeContainer.className = `auth-mensaje-js auth-mensaje auth-${tipo}`;
+            document.querySelector('.auth-contenedor')?.prepend(mensajeContainer);
         }
 
         mensajeContainer.textContent = mensaje;
 
-        // Eliminar después de 5 segundos
-        setTimeout(() => mensajeContainer.remove(), 5000);
+        setTimeout(() => {
+            if (mensajeContainer) {
+                mensajeContainer.remove();
+            }
+        }, 5000);
+    }
+
+    function validarEmail(email) {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
     }
 });

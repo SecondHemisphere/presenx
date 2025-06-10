@@ -24,23 +24,23 @@
             <?php endif; ?>
             <!-- Contenido Principal -->
             <main class="contenedor-principal">
-    <?php else: ?>
-        <!-- Layout simplificado para login -->
-        <main class="contenedor-principal-login">
-    <?php endif; ?>
+            <?php else: ?>
+                <!-- Layout simplificado para login -->
+                <main class="contenedor-principal-login">
+                <?php endif; ?>
 
-    <!-- Vista -->
-    <?php
-    if (isset($view)) {
-        if (isset($data)) extract($data);
-        require_once $view;
-    } else {
-        echo "<p>Error: vista no especificada.</p>";
-    }
-    ?>
+                <!-- Vista -->
+                <?php
+                if (isset($view)) {
+                    if (isset($data)) extract($data);
+                    require_once __DIR__ . '/../' . $view;
+                } else {
+                    echo "<p>Error: vista no especificada.</p>";
+                }
+                ?>
 
-    <?php if (!($esLogin ?? false)): ?>
-            </main>
+                <?php if (!($esLogin ?? false)): ?>
+                </main>
         </div>
     <?php else: ?>
         </main>
@@ -58,4 +58,5 @@
     <!-- Scripts -->
     <script src="/assets/js/alerta.js"></script>
 </body>
+
 </html>

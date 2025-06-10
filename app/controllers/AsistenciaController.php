@@ -10,11 +10,6 @@ class AsistenciaController
         $this->db = $db;
         $this->asistenciaModel = new Asistencia($db);
         $this->empleadoModel = new Empleado($db);
-
-        if (!$this->isLoggedIn()) {
-            header('Location: /login');
-            exit;
-        }
     }
 
     public function index()
@@ -31,9 +26,10 @@ class AsistenciaController
 
         unset($_SESSION['success_message'], $_SESSION['error_message']);
 
-        $view = __DIR__ . '/../views/asistencias/index.php';
+        $view = 'admin/asistencias/index.php';
         require_once __DIR__ . '/../views/include/layout.php';
     }
+
 
     public function create()
     {
@@ -48,10 +44,86 @@ class AsistenciaController
             'current_page' => 'asistencias'
         ];
 
-        $view = __DIR__ . '/../views/asistencias/create.php';
+        $view = 'admin/asistencias/create.php';
         require_once __DIR__ . '/../views/include/layout.php';
     }
 
+    public function storeUsuario()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: /');
+            exit;
+        }
+
+        $cedula = trim($_POST['cedula'] ?? '');
+        $tipo = $_POST['tipo'] ?? '';
+
+        if (empty($cedula) || !preg_match('/^\d{10}$/', $cedula)) {
+            $_SESSION['error_message'] = 'Cédula inválida. Debe tener 10 dígitos.';
+            header('Location: /');
+            exit;
+        }
+
+        if (!in_array($tipo, ['entrada', 'salida'])) {
+            $_SESSION['error_message'] = 'Tipo de registro inválido.';
+            header('Location: /');
+            exit;
+        }
+
+        $empleado = $this->empleadoModel->obtenerPorCedula($cedula);
+        if (!$empleado) {
+            $_SESSION['error_message'] = 'Empleado no encontrado con esa cédula.';
+            header('Location: /');
+            exit;
+        }
+
+        $hoy = date('Y-m-d');
+        $ahora = date('Y-m-d H:i:s');
+
+        // Obtener registro del día actual
+        $registroHoy = $this->asistenciaModel->obtenerPorEmpleadoYFecha($empleado->id, $hoy);
+
+        if ($tipo === 'entrada') {
+            if ($registroHoy) {
+                $_SESSION['error_message'] = 'Ya se ha registrado la entrada hoy.';
+            } else {
+                $inputData = [
+                    'empleado_id' => $empleado->id,
+                    'entrada' => $ahora,
+                    'salida' => null,
+                    'registrado_por' => $empleado->id,
+                ];
+                $result = $this->asistenciaModel->registrar($inputData);
+
+                if ($result['exito']) {
+                    $_SESSION['success_message'] = 'Entrada registrada correctamente.';
+                } else {
+                    $_SESSION['error_message'] = $result['errores'][0] ?? 'Error al registrar la entrada.';
+                }
+            }
+        }
+
+        if ($tipo === 'salida') {
+            if (!$registroHoy) {
+                $_SESSION['error_message'] = 'No se ha registrado entrada hoy.';
+            } elseif (!empty($registroHoy->salida)) {
+                $_SESSION['error_message'] = 'Ya se ha registrado la salida hoy.';
+            } else {
+                $result = $this->asistenciaModel->actualizarSalida($registroHoy->id, $ahora);
+
+                if ($result['exito']) {
+                    $_SESSION['success_message'] = 'Salida registrada correctamente.';
+                } else {
+                    $_SESSION['error_message'] = $result['errores'][0] ?? 'Error al registrar la salida.';
+                }
+            }
+        }
+
+        header('Location: /');
+        exit;
+    }
+
+    // Registro por administrador para cualquier empleado
     public function store()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -87,73 +159,7 @@ class AsistenciaController
                     'current_page' => 'asistencias'
                 ];
 
-                $view = __DIR__ . '/../views/asistencias/create.php';
-                require_once __DIR__ . '/../views/include/layout.php';
-            }
-        }
-    }
-
-    public function edit($id)
-    {
-        $asistencia = $this->asistenciaModel->obtenerPorId($id);
-
-        if (!$asistencia) {
-            $_SESSION['error_message'] = 'Asistencia no encontrada';
-            header('Location: /asistencias');
-            exit;
-        }
-
-        $empleados = $this->empleadoModel->obtenerTodos();
-
-        $data = [
-            'title' => 'Editar Asistencia',
-            'asistencia' => $asistencia,
-            'errors' => [],
-            'form_action' => "/asistencias/update/$id",
-            'empleados' => $empleados,
-            'current_page' => 'asistencias'
-        ];
-
-        $view = __DIR__ . '/../views/asistencias/edit.php';
-        require_once __DIR__ . '/../views/include/layout.php';
-    }
-
-    public function update($id)
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $inputData = $_POST;
-
-            $hoy = date('Y-m-d');
-            if (!empty($inputData['entrada']) && preg_match('/^\d{2}:\d{2}$/', $inputData['entrada'])) {
-                $inputData['entrada'] = "$hoy {$inputData['entrada']}:00";
-            }
-            if (!empty($inputData['salida']) && preg_match('/^\d{2}:\d{2}$/', $inputData['salida'])) {
-                $inputData['salida'] = "$hoy {$inputData['salida']}:00";
-            }
-
-            // Eliminar campos innecesarios
-            unset($inputData['observaciones'], $inputData['registrado_por']);
-
-            $result = $this->asistenciaModel->actualizar($id, $inputData);
-
-            if ($result['exito']) {
-                $_SESSION['success_message'] = 'Asistencia actualizada correctamente';
-                header('Location: /asistencias');
-                exit;
-            } else {
-                $original = $this->asistenciaModel->obtenerPorId($id);
-                $empleados = $this->empleadoModel->obtenerTodos();
-
-                $data = [
-                    'title' => 'Editar Asistencia',
-                    'asistencia' => (object) array_merge((array) $original, $inputData),
-                    'errors' => $result['errores'] ?? [],
-                    'form_action' => "/asistencias/update/$id",
-                    'empleados' => $empleados,
-                    'current_page' => 'asistencias'
-                ];
-
-                $view = __DIR__ . '/../views/asistencias/edit.php';
+                $view = 'admin/asistencias/create.php';
                 require_once __DIR__ . '/../views/include/layout.php';
             }
         }

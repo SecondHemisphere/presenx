@@ -58,7 +58,7 @@ class EmpresaController
             'current_page' => 'empresas'
         ];
 
-        $view = __DIR__ . '/../views/empresa/configuracion.php';
+        $view = 'admin/empresa/configuracion.php';
         require_once __DIR__ . '/../views/include/layout.php';
     }
 

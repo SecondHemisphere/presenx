@@ -19,12 +19,12 @@ $fin = min($total_registros, $pagina_actual * $por_pagina);
     <?php
     $mensaje_exito = $data['success_message'] ?? '';
     $mensaje_error = $data['error_message'] ?? '';
-    include __DIR__ . '/../components/alerta-flash.php';
+    include __DIR__ . '/../../components/alerta-flash.php';
     ?>
 
     <!-- Modal de confirmación para eliminar empleados -->
     <?php $mensaje_confirmacion = "¿Estás seguro de que deseas eliminar este empleado?"; ?>
-    <?php include __DIR__ . '/../components/modal-confirmacion.php'; ?>
+    <?php include __DIR__ . '/../../components/modal-confirmacion.php'; ?>
 
     <!-- Título principal -->
     <h1><?= htmlspecialchars($data['title']) ?></h1>
@@ -36,7 +36,7 @@ $fin = min($total_registros, $pagina_actual * $por_pagina);
     $ruta_crear = '/empleados/create';
     $texto_boton = 'Nuevo Empleado';
     $opciones_por_pagina = [5, 10, 25, 50];
-    include __DIR__ . '/../components/encabezado-acciones.php';
+    include __DIR__ . '/../../components/encabezado-acciones.php';
     ?>
 
     <!-- Tabla de empleados -->
@@ -61,12 +61,12 @@ $fin = min($total_registros, $pagina_actual * $por_pagina);
         $filas = $registros_paginados;
         $ruta_base = '/empleados';
 
-        include __DIR__ . '/../components/tabla-generica.php';
+        include __DIR__ . '/../../components/tabla-generica.php';
         ?>
     </div>
 
     <!-- Controles de paginación -->
-    <?php include __DIR__ . '/../components/paginacion.php'; ?>
+    <?php include __DIR__ . '/../../components/paginacion.php'; ?>
 </div>
 
 </body>

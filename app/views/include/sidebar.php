@@ -38,6 +38,13 @@
                     <span>Asistencias</span>
                 </a>
             </li>
+            <!-- Usuarios -->
+            <li class="<?php echo ($current_page == 'usuarios') ? 'active' : '' ?>">
+                <a href="/usuarios">
+                    <i class="fas fa-users"></i>
+                    <span>Usuarios</span>
+                </a>
+            </li>
             <!-- Empresa -->
             <li class="<?php echo ($current_page == 'empresa') ? 'active' : '' ?>">
                 <a href="/empresa/configuracion">

@@ -9,7 +9,7 @@ define('DB_NAME', 'presenx');
 
 // Configuración de la aplicación
 define('APP_ROOT', dirname(dirname(__FILE__)));
-define('URL_ROOT', 'http://localhost/presenx/public');
+define('URL_ROOT', 'presenx.test/public');
 define('SITE_NAME', 'Presenx');
 
 // Constantes

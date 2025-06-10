@@ -9,7 +9,14 @@
  * - $filas: Array de objetos con los datos
  * - $ruta_base: Ruta para acciones
  * - $titulo: Título descriptivo (ej. "Autores")
+ * - $mostrar_editar: bool Opcional. Mostrar botón editar (default true)
+ * - $mostrar_eliminar: bool Opcional. Mostrar botón eliminar (default true)
  */
+
+// Valores por defecto:
+$mostrar_editar = $mostrar_editar ?? true;
+$mostrar_eliminar = $mostrar_eliminar ?? true;
+
 ?>
 
 <?php if (!empty($filas)): ?>
@@ -21,7 +28,7 @@
                         <?= htmlspecialchars($col['titulo']) ?>
                     </th>
                 <?php endforeach; ?>
-                <th class="celda-acciones">Acciones</th>
+                <th class="celda-acciones">Acciones</th>  <!-- Siempre visible -->
             </tr>
         </thead>
         <tbody>
@@ -65,16 +72,19 @@
                             ?>
                         </td>
                     <?php endforeach; ?>
-                    <!-- Acciones: editar y eliminar -->
                     <td class="celda-acciones">
-                        <a href="<?= $ruta_base ?>/edit/<?= $fila->id ?>" class="btn-accion btn-editar">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        <form action="<?= $ruta_base ?>/delete/<?= $fila->id ?>" method="POST" class="form-eliminar">
-                            <button type="button" class="btn-accion btn-eliminar">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </form>
+                        <?php if ($mostrar_editar): ?>
+                            <a href="<?= $ruta_base ?>/edit/<?= $fila->id ?>" class="btn-accion btn-editar" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        <?php endif; ?>
+                        <?php if ($mostrar_eliminar): ?>
+                            <form action="<?= $ruta_base ?>/delete/<?= $fila->id ?>" method="POST" class="form-eliminar" style="display:inline-block;">
+                                <button type="button" class="btn-accion btn-eliminar" title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        <?php endif; ?>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -85,6 +95,6 @@
         <svg viewBox="0 0 24 24">
             <path fill="currentColor" d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z" />
         </svg>
-        <p>No hay <?= htmlspecialchars($title) ?> registrados</p>
+        <p>No hay <?= htmlspecialchars($titulo) ?> registrados</p>
     </div>
 <?php endif; ?>

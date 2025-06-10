@@ -17,11 +17,11 @@
         </div>
     <?php endif; ?>
 
-    <!-- Formulario de inicio de sesión -->
+    <!-- Formulario de registro -->
     <form id="registerForm" action="/auth/register" method="POST" class="auth-formulario">
         <div class="auth-grupo">
-            <label for="name">Nombre completo</label>
-            <input type="text" id="name" name="name" placeholder="Ej: Juan Pérez" required>
+            <label for="nombre">Nombre completo</label>
+            <input type="text" id="nombre" name="nombre" placeholder="Ej: Juan Pérez" required>
         </div>
 
         <div class="auth-grupo">
@@ -31,12 +31,12 @@
 
         <div class="auth-grupo">
             <label for="password">Contraseña</label>
-            <input type="password" id="password" name="password" placeholder="Mínimo 8 caracteres" required>
+            <input type="password" id="password" name="password" placeholder="Mínimo 8 caracteres" required minlength="8">
         </div>
 
         <div class="auth-grupo">
             <label for="confirm_password">Confirmar contraseña</label>
-            <input type="password" id="confirm_password" name="confirm_password" placeholder="Repite tu contraseña" required>
+            <input type="password" id="confirm_password" name="confirm_password" placeholder="Repite tu contraseña" required minlength="8">
         </div>
 
         <button type="submit" class="auth-boton auth-boton-principal">Registrarse</button>
