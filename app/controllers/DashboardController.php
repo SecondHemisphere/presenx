@@ -29,14 +29,24 @@ class DashboardController
     {
         $user = $this->userModel->obtenerPorId($_SESSION['user_id']);
 
+        $total_empleados = $this->empleadoModel->obtenerTotal();
+        $asistencias_hoy = $this->asistenciaModel->contarDeHoy();
+
+        $porcentaje = 0;
+        if ($total_empleados > 0) {
+            $porcentaje = ($asistencias_hoy / $total_empleados) * 100;
+            $porcentaje = min($porcentaje, 100);
+        }
+
         $data = [
             'title' => 'Dashboard',
             'user' => $user,
             'total_usuarios' => $this->userModel->obtenerTotal(),
             'total_cargos' => $this->cargoModel->obtenerTotal(),
-            'total_empleados' => $this->empleadoModel->obtenerTotal(),
+            'total_empleados' => $total_empleados,
+            'porcentaje' => $porcentaje,
             'total_asistencias' => $this->asistenciaModel->obtenerTotal(),
-            'asistencias_hoy' => $this->asistenciaModel->contarDeHoy(),
+            'asistencias_hoy' => $asistencias_hoy,
             'estado_asistencias' => $this->asistenciaModel->contarPorEstadoHoy(),
             'ultimasEntradas' => $this->asistenciaModel->ultimasEntradas()
         ];

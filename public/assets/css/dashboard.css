@@ -1,136 +1,343 @@
+:root {
+  /* Colores para las tarjetas de estadísticas del dashboard */
+  --color-tarjeta-usuarios: #3498db;
+  --color-tarjeta-cargos: #2ecc71;
+  --color-tarjeta-empleados: #9b59b6;
+  --color-tarjeta-asistencias-registradas: #f39c12;
+  --color-tarjeta-otras-estadisticas-5: #34495e;
+  --color-tarjeta-otras-estadisticas-6: #e74c3c;
+  --color-tarjeta-otras-estadisticas-7: #1abc9c;
 
-.contenido-dashboard{
-    padding: 1rem;
+  /* Colores para textos de todo el dashboard */
+  --color-texto-titulo-principal: #2c3e50;
+  --color-texto-parrafo-cabecera: #7f8c8d;
+  --color-texto-general-claro: #555;
+  --color-texto-negro-fuerte: black;
+  --color-texto-blanco: #fff;
+  --color-texto-titulo-grafico-tabla: #333;
+  --color-texto-icono-grafico: #666;
+
+  /* Colores de fondo de diferentes secciones del dashboard */
+  --color-fondo-tarjeta: #ffffff;
+  --color-fondo-caja-principal: #ffffff;
+  --color-fondo-barra-grafico: #e0e0e0;
+  --color-fondo-encabezado-tabla: #f8f8f8;
+  --color-fondo-grafico-pastel-base: #ccc;
+  --color-fondo-fila-hover-tabla: #f5f5f5;
+
+  /* Colores de bordes y divisores */
+  --color-borde-inferior-tabla: #eee;
+  --color-borde-contenedor: #e0e0e0; /* Nuevo/Confirmado */
+
+  /* Colores de sombra para elementos del dashboard */
+  --sombra-tarjeta: rgba(0, 0, 0, 0.05);
+  --sombra-grafico-pastel: rgba(0, 0, 0, 0.08);
+  --sombra-caja-principal: rgba(0, 0, 0, 0.1);
+
+  /* Colores para los estados de asistencia (gráfico y tabla) */
+  --color-estado-puntual: #2ecc71;
+  --color-estado-tarde: #f39c12;
+  --color-estado-ausente: #e74c3c;
 }
 
-/* Cabecera */
+.contenido-dashboard {
+  padding: 1rem;
+}
+
 .cabecera-superior {
-    margin-bottom: 2rem;
+  margin-bottom: 2rem;
 }
 
 .cabecera-superior h1 {
-    font-size: 2.5rem;
-    color: #2c3e50;
-    margin-bottom: 1rem;
+  font-size: 2.5rem;
+  color: var(--color-texto-titulo-principal);
+  margin-bottom: 1rem;
 }
 
 .cabecera-superior p {
-    font-size: 1.8rem;
-    color: #7f8c8d;
+  font-size: 1.8rem;
+  color: var(--color-texto-parrafo-cabecera);
 }
 
-/* Estadísticas */
-.estadisticas-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 3rem;
-    margin-bottom: 2rem;
+.estadisticas-contenedor {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 3rem;
+  margin-bottom: 3.5rem;
 }
 
 .tarjeta-estadistica {
-    background-color: #f9f9f9;
-    border-radius: 0.8rem;
-    padding: 1.5rem 1rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    border-left: 5px solid;
+  background-color: var(--color-fondo-tarjeta);
+  border-radius: 0.8rem;
+  padding: 1.5rem 1rem;
+  box-shadow: 0 0.4rem 0.6rem var(--sombra-tarjeta);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  border-left: 0.5rem solid;
 }
 
-/* Colores para los bordes izquierdos */
-.tarjeta-estadistica:nth-child(1) { border-left-color: #3498db; } /* Usuarios */
-.tarjeta-estadistica:nth-child(2) { border-left-color: #2ecc71; } /* Libros */
-.tarjeta-estadistica:nth-child(3) { border-left-color: #9b59b6; } /* Autor */
-.tarjeta-estadistica:nth-child(4) { border-left-color: #f39c12; } /* Editorial */
-.tarjeta-estadistica:nth-child(5) { border-left-color: #34495e; } /* Estudiantes */
-.tarjeta-estadistica:nth-child(6) { border-left-color: #e74c3c; } /* Préstamos */
-.tarjeta-estadistica:nth-child(7) { border-left-color: #1abc9c; } /* Materias */
+.tarjeta-estadistica:nth-child(1) {
+  border-left-color: var(--color-tarjeta-usuarios);
+}
+.tarjeta-estadistica:nth-child(2) {
+  border-left-color: var(--color-tarjeta-cargos);
+}
+.tarjeta-estadistica:nth-child(3) {
+  border-left-color: var(--color-tarjeta-empleados);
+}
+.tarjeta-estadistica:nth-child(4) {
+  border-left-color: var(--color-tarjeta-asistencias-registradas);
+}
+.tarjeta-estadistica:nth-child(5) {
+  border-left-color: var(--color-tarjeta-otras-estadisticas-5);
+}
+.tarjeta-estadistica:nth-child(6) {
+  border-left-color: var(--color-tarjeta-otras-estadisticas-6);
+}
+.tarjeta-estadistica:nth-child(7) {
+  border-left-color: var(--color-tarjeta-otras-estadisticas-7);
+}
 
 .tarjeta-estadistica h3 {
-    font-size: 1.2rem;
-    color: black;
-    margin-bottom: 5px;
-    text-transform: uppercase;
+  font-size: 2rem;
+  color: var(--color-texto-negro-fuerte);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
 }
 
 .tarjeta-estadistica p {
-    font-size: 2rem;
-    font-weight: 500;
-    color: black;
-    margin: 0;
+  font-size: 2rem;
+  font-weight: 500;
+  color: var(--color-texto-negro-fuerte);
+  margin: 0;
 }
 
 .tarjeta-estadistica i {
-    font-size: 2.5rem;
-    color: #fff;
-    background-color: rgba(0, 0, 0, 0.1);
-    width: 60px;
-    height: 60px;
-    line-height: 60px;
-    border-radius: 50%;
-    margin: 0 auto 1rem auto;
-    display: block;
+  font-size: 2.5rem;
+  color: var(--color-texto-blanco);
+  background-color: rgba(0, 0, 0, 0.1);
+  width: 6rem;
+  height: 6rem;
+  line-height: 6rem;
+  border-radius: 50%;
+  margin: 0 auto 1rem auto;
+  display: block;
 }
 
-/* Colores de fondo para los iconos */
-.tarjeta-estadistica:nth-child(1) i { background-color: #3498db; }
-.tarjeta-estadistica:nth-child(2) i { background-color: #2ecc71; }
-.tarjeta-estadistica:nth-child(3) i { background-color: #9b59b6; }
-.tarjeta-estadistica:nth-child(4) i { background-color: #f39c12; }
-.tarjeta-estadistica:nth-child(5) i { background-color: #34495e; }
-.tarjeta-estadistica:nth-child(6) i { background-color: #e74c3c; }
-.tarjeta-estadistica:nth-child(7) i { background-color: #1abc9c; }
+.tarjeta-estadistica:nth-child(1) i {
+  background-color: var(--color-tarjeta-usuarios);
+}
+.tarjeta-estadistica:nth-child(2) i {
+  background-color: var(--color-tarjeta-cargos);
+}
+.tarjeta-estadistica:nth-child(3) i {
+  background-color: var(--color-tarjeta-empleados);
+}
+.tarjeta-estadistica:nth-child(4) i {
+  background-color: var(--color-tarjeta-asistencias-registradas);
+}
+.tarjeta-estadistica:nth-child(5) i {
+  background-color: var(--color-tarjeta-otras-estadisticas-5);
+}
+.tarjeta-estadistica:nth-child(6) i {
+  background-color: var(--color-tarjeta-otras-estadisticas-6);
+}
+.tarjeta-estadistica:nth-child(7) i {
+  background-color: var(--color-tarjeta-otras-estadisticas-7);
+}
 
-/* Gráfico de libros disponibles */
+/* --- CAMBIOS APLICADOS AQUÍ --- */
+.asistencia-graficos-caja {
+  display: flex;
+  gap: 3rem; /* Aumentado el espacio entre los gráficos */
+  margin-bottom: 3.5rem; /* Ajuste de margen */
+  padding: 2rem;
+  background-color: var(--color-fondo-caja-principal);
+  border-radius: 1.2rem;
+  box-shadow: 0 0.4rem 1.2rem var(--sombra-caja-principal);
+  border: 0.1rem solid var(--color-borde-contenedor); /* Borde para la caja principal */
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-around; /* Distribuye el espacio para separar los elementos */
+}
+
 .grafico-container {
-    background-color: #E6F2FF;
-    border-radius: 0.8rem;
-    padding: 1.5rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    width: 30rem;
-    text-align: center;
-    margin-top: 2rem;
+  flex: 1;
+  min-width: 28rem;
+  max-width: 35rem; /* Nuevo max-width para el gráfico de barra */
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .grafico-titulo {
-    font-size: 1.5rem;
-    color: #2c3e50;
-    margin-bottom: 1.5rem;
-    font-weight: 600;
-    text-transform: uppercase;
+  font-size: 1.5rem;
+  color: var(--color-texto-titulo-grafico-tabla);
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
 }
 
 .barra-container {
-    height: 15rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
-    margin-bottom: 1rem;
+  background: var(--color-fondo-barra-grafico);
+  width: 6rem;
+  height: 15rem;
+  border-radius: 0.8rem;
+  position: relative;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
 }
 
 .barra {
-    width: 5rem;
-    background-color: #3498db;
-    border-radius: 5px 5px 0 0;
-    position: relative;
-    transition: height 0.5s ease;
+  background-color: var(--color-tarjeta-usuarios);
+  width: 100%;
+  border-radius: 0.8rem 0.8rem 0 0;
+  text-align: center;
+  color: var(--color-texto-blanco);
+  font-weight: bold;
+  transition: height 0.5s ease;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 }
 
 .barra-valor {
-    position: absolute;
-    top: -3rem;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 1.6rem;
-    font-weight: bold;
-    color: #2c3e50;
+  padding-bottom: 0.5rem;
+  font-size: 1.4rem;
 }
 
 .barra-etiqueta {
-    margin-top: 1rem;
-    font-size: 1.2rem;
-    color: #7f8c8d;
-    text-transform: uppercase;
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: var(--color-texto-general-claro);
+}
+
+.estado-asistencias {
+  flex: 1.5;
+  min-width: 30rem;
+  max-width: 45rem; /* Nuevo max-width para el gráfico de pastel */
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centra el contenido (título, gráfico, leyenda) */
+  justify-content: center;
+}
+
+.estado-asistencias h3 {
+  font-size: 1.6rem;
+  margin-bottom: 1.5rem;
+  color: var(--color-texto-titulo-grafico-tabla);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+}
+
+.estado-asistencias h3 .fa-chart-pie {
+  color: var(--color-texto-icono-grafico);
+}
+
+.grafico-pastel {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.pastel {
+  width: 17rem;
+  height: 17rem;
+  border-radius: 50%;
+  background: var(--color-fondo-grafico-pastel-base);
+  box-shadow: 0 0.2rem 0.6rem var(--sombra-grafico-pastel);
+  flex-shrink: 0;
+}
+
+.leyenda {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 1.7rem;
+  color: var(--color-texto-general-claro);
+  text-align: left; /* Alinea el texto de la leyenda a la izquierda */
+}
+
+.leyenda li {
+  margin-bottom: 0.6rem;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem; /* Espacio entre el cuadro de color y el texto */
+}
+
+.cuadro {
+  display: inline-block;
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 0.3rem;
+  flex-shrink: 0;
+}
+
+.cuadro.verde {
+  background-color: var(--color-estado-puntual);
+}
+.cuadro.naranja {
+  background-color: var(--color-estado-tarde);
+}
+.cuadro.rojo {
+  background-color: var(--color-estado-ausente);
+}
+
+.contenedor-tabla.ultimos-ingresos {
+  background: var(--color-fondo-caja-principal);
+  padding: 2rem;
+  border-radius: 1.2rem;
+  box-shadow: 0 0.4rem 1.2rem var(--sombra-caja-principal);
+  margin-top: 2rem;
+}
+
+.ultimos-ingresos h3 {
+  font-size: 1.7rem;
+  color: var(--color-texto-titulo-grafico-tabla);
+  margin-bottom: 1.5rem;
+}
+
+.ultimos-ingresos table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1.4rem;
+}
+
+.ultimos-ingresos th,
+.ultimos-ingresos td {
+  padding: 1.2rem 1rem;
+  border-bottom: 0.1rem solid var(--color-borde-inferior-tabla);
+  text-align: left;
+}
+
+.ultimos-ingresos th {
+  background-color: var(--color-fondo-encabezado-tabla);
+  color: var(--color-texto-general-claro);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.ultimos-ingresos tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.ultimos-ingresos tbody tr:hover {
+  background-color: var(--color-fondo-fila-hover-tabla);
 }

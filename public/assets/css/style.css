@@ -18,7 +18,7 @@
   --color-alerta-fondo: rgba(0, 0, 0, 0.4);
 }
 
-/* General */
+/* Base Styles */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -31,9 +31,6 @@ html {
 }
 
 body {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
   font-family: "Playpen Sans";
   background-color: var(--color-fondo);
   color: #2c3e50;
@@ -42,7 +39,7 @@ body {
   flex-direction: column;
 }
 
-/* Layout principal */
+/* Layout */
 .layout-principal {
   display: flex;
   flex: 1;
@@ -56,7 +53,6 @@ body {
   flex-direction: column;
   box-shadow: 0.2rem 0 0.5rem rgba(0, 0, 0, 0.1);
   width: 20rem;
-  height: 100%;
 }
 
 .user-info {
@@ -124,9 +120,6 @@ body {
 
 .sidebar-menu li.active {
   background-color: var(--color-secundario);
-}
-
-.sidebar-menu li.active a {
   color: #fff;
 }
 
@@ -136,15 +129,15 @@ body {
   font-size: 1.7rem;
 }
 
-/* Contenido principal */
+/* Contenido Principal */
 .contenedor-principal {
   flex: 1;
-  background-color: #ffffff;
+  background-color: #f4f6f8;
   padding: 2rem;
   min-height: 100vh;
 }
 
-/* Elementos comunes */
+/* Elementos Comunes */
 .enlace {
   color: var(--color-enlace);
   text-decoration: none;
@@ -173,7 +166,7 @@ body {
   font-size: 1.6rem;
 }
 
-/* Paginación */
+/* Paginacion */
 .paginacion-container {
   display: flex;
   justify-content: space-between;
@@ -187,7 +180,6 @@ body {
   text-align: end;
   width: 100%;
   max-width: 50rem;
-  box-sizing: border-box;
   margin-right: 5rem;
 }
 
@@ -201,7 +193,6 @@ body {
   background-color: transparent;
   box-shadow: none;
   text-align: end;
-  box-sizing: border-box;
 }
 
 .paginacion-list {
@@ -248,7 +239,7 @@ body {
   cursor: not-allowed;
 }
 
-/* Modales */
+/* Modals - Alerta Personalizada */
 .custom-alert {
   position: fixed;
   top: 0;
@@ -326,6 +317,7 @@ body {
   background: #5d52d1;
 }
 
+/* Modals - Custom Confirm */
 .custom-confirm {
   position: fixed;
   top: 0;
@@ -404,7 +396,7 @@ body {
   transform: translateY(-0.2rem);
 }
 
-/* Estilos específicos para los listados */
+/* Listings Container */
 .contenedor-listados {
   width: 100%;
   background-color: #ffffff;
@@ -420,7 +412,7 @@ body {
   border: 0;
   height: 0.1rem;
   background-color: #e0e0e0;
-  margin: 0.5rem 0rem 1rem 0rem;
+  margin: 0.5rem 0 1rem;
 }
 
 .contenedor-listados .encabezado {
@@ -451,6 +443,7 @@ body {
   text-align: center;
 }
 
+/* Table Container */
 .contenedor-tabla {
   padding-top: 1rem;
 }
@@ -471,17 +464,10 @@ body {
   font-size: 1.4rem;
 }
 
-.contenedor-imagen-tabla img {
-  max-height: 50px;
-  height: auto;
-  width: auto;
-}
-
 .contenedor-tabla th {
   background-color: #3498db;
   color: white;
   padding: 0.8rem 0.5rem;
-  text-align: left;
   font-weight: bold;
 }
 
@@ -499,8 +485,8 @@ body {
   background-color: #f8f9fa;
 }
 
-/* Celdas de imagen */
-.contenedor-tabla .contenedor-imagen-tabla {
+/* Table Image Cells */
+.contenedor-imagen-tabla {
   width: 60px;
   height: 60px;
   border-radius: 4px;
@@ -511,18 +497,18 @@ body {
   flex-shrink: 0;
 }
 
-.contenedor-tabla .contenedor-imagen-tabla img {
+.contenedor-imagen-tabla img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
 
-.contenedor-tabla .contenedor-imagen-tabla:hover img {
+.contenedor-imagen-tabla:hover img {
   transform: scale(1.05);
 }
 
-.contenedor-tabla .imagen-placeholder {
+.imagen-placeholder {
   width: 60px;
   height: 60px;
   background-color: #f1f3f5;
@@ -533,11 +519,12 @@ body {
   color: #adb5bd;
 }
 
-.contenedor-tabla .imagen-placeholder svg {
+.imagen-placeholder svg {
   width: 1rem;
   height: 1rem;
 }
 
+/* Table Status */
 .contenedor-tabla .estado {
   display: inline-block;
   padding: 4px 10px;
@@ -555,7 +542,7 @@ body {
   color: #c81e1e;
 }
 
-/* Botones de acción */
+/* Action Buttons */
 .contenedor-tabla .celda-acciones {
   display: flex;
   justify-content: center;
@@ -564,31 +551,27 @@ body {
 }
 
 .contenedor-tabla .btn-accion {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    border: none;
-    border-radius: 8px;
-    color: white;
-    text-decoration: none;
-    cursor: pointer;
-    font-size: 1.8rem;
-    padding: auto;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  border-radius: 8px;
+  color: white; /* This will be overridden by specific button colors */
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 1.8rem;
+  padding: auto;
 }
 
 .contenedor-tabla .btn-editar {
   color: #2196f3;
 }
 
-.contenedor-tabla .i {
-  padding: auto;
-}
-
 .contenedor-tabla .btn-eliminar {
   color: #f44336;
 }
 
-/* Mensaje sin registros */
+/* No Records Message */
 .contenedor-tabla .sin-registros {
   padding: 40px 20px;
   text-align: center;
@@ -607,6 +590,7 @@ body {
   font-size: 1.1rem;
 }
 
+/* New Record Button */
 .nuevo-registro {
   display: flex;
   justify-content: flex-end;
@@ -640,7 +624,7 @@ body {
   font-size: 14px;
 }
 
-/* Animaciones */
+/* Animations */
 @keyframes aparecer {
   from {
     opacity: 0;
