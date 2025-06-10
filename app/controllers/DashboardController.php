@@ -32,6 +32,7 @@ class DashboardController
         $data = [
             'title' => 'Dashboard',
             'user' => $user,
+            'total_usuarios' => $this->userModel->obtenerTotal(),
             'total_cargos' => $this->cargoModel->obtenerTotal(),
             'total_empleados' => $this->empleadoModel->obtenerTotal(),
             'total_asistencias' => $this->asistenciaModel->obtenerTotal(),
@@ -41,7 +42,7 @@ class DashboardController
         ];
 
         $current_page = 'dashboard';
-        
+
         $view = 'admin/dashboard/index.php';
 
         require_once __DIR__ . '/../views/include/layout.php';

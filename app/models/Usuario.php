@@ -115,4 +115,11 @@ class Usuario
 
         return $this->db->execute();
     }
+
+    public function obtenerTotal()
+    {
+        $this->db->query('SELECT COUNT(*) as total FROM usuarios');
+        $resultado = $this->db->single();
+        return $resultado->total;
+    }
 }
