@@ -18,13 +18,12 @@
 
         <form action="/storeAsistencia" method="POST" novalidate>
             <div class="grupo-entrada <?= isset($_SESSION['error_message']) ? 'error-input' : '' ?>">
-                <label for="cedulaEmpleado" class="visually-hidden">Cédula del empleado</label>
+                <label for="cedulaEmpleado">Cédula del empleado</label>
                 <input
                     type="text"
                     name="cedula"
                     id="cedulaEmpleado"
                     placeholder="Cédula del empleado"
-                    aria-label="Cédula del empleado"
                     pattern="\d{10}"
                     title="Ingrese una cédula válida de 10 dígitos"
                     required

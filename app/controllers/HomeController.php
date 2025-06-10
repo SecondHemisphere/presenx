@@ -17,7 +17,6 @@ class HomeController
         require_once __DIR__ . '/../views/include/layout.php';
     }
 
-
     private function isLoggedIn()
     {
         return isset($_SESSION['user_id']);

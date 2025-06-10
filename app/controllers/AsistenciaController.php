@@ -30,7 +30,6 @@ class AsistenciaController
         require_once __DIR__ . '/../views/include/layout.php';
     }
 
-
     public function create()
     {
         $empleados = $this->empleadoModel->obtenerTodos();
@@ -58,6 +57,7 @@ class AsistenciaController
         $cedula = trim($_POST['cedula'] ?? '');
         $tipo = $_POST['tipo'] ?? '';
 
+        // Validaciones básicas
         if (empty($cedula) || !preg_match('/^\d{10}$/', $cedula)) {
             $_SESSION['error_message'] = 'Cédula inválida. Debe tener 10 dígitos.';
             header('Location: /');
@@ -80,19 +80,18 @@ class AsistenciaController
         $hoy = date('Y-m-d');
         $ahora = date('Y-m-d H:i:s');
 
-        // Obtener registro del día actual
         $registroHoy = $this->asistenciaModel->obtenerPorEmpleadoYFecha($empleado->id, $hoy);
 
         if ($tipo === 'entrada') {
-            if ($registroHoy) {
+            if ($registroHoy && !empty($registroHoy->entrada)) {
                 $_SESSION['error_message'] = 'Ya se ha registrado la entrada hoy.';
             } else {
                 $inputData = [
-                    'empleado_id' => $empleado->id,
+                    'id_empleado' => $empleado->id,
                     'entrada' => $ahora,
-                    'salida' => null,
-                    'registrado_por' => $empleado->id,
+                    'salida' => null
                 ];
+
                 $result = $this->asistenciaModel->registrar($inputData);
 
                 if ($result['exito']) {
@@ -106,7 +105,9 @@ class AsistenciaController
         if ($tipo === 'salida') {
             if (!$registroHoy) {
                 $_SESSION['error_message'] = 'No se ha registrado entrada hoy.';
-            } elseif (!empty($registroHoy->salida)) {
+            } elseif (is_null($registroHoy->entrada) || $registroHoy->entrada === '') {
+                $_SESSION['error_message'] = 'No se ha registrado entrada hoy.';
+            } elseif (!is_null($registroHoy->salida) && $registroHoy->salida !== '') {
                 $_SESSION['error_message'] = 'Ya se ha registrado la salida hoy.';
             } else {
                 $result = $this->asistenciaModel->actualizarSalida($registroHoy->id, $ahora);
@@ -123,13 +124,11 @@ class AsistenciaController
         exit;
     }
 
-    // Registro por administrador para cualquier empleado
     public function store()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $inputData = $_POST;
 
-            // Construcción de timestamps si se da solo la hora
             $hoy = date('Y-m-d');
             if (!empty($inputData['entrada']) && preg_match('/^\d{2}:\d{2}$/', $inputData['entrada'])) {
                 $inputData['entrada'] = "$hoy {$inputData['entrada']}:00";
@@ -138,7 +137,7 @@ class AsistenciaController
                 $inputData['salida'] = "$hoy {$inputData['salida']}:00";
             }
 
-            // Eliminar campos innecesarios
+            // Eliminar campos inexistentes por seguridad
             unset($inputData['observaciones'], $inputData['registrado_por']);
 
             $result = $this->asistenciaModel->registrar($inputData);

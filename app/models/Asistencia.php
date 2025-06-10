@@ -60,10 +60,10 @@ class Asistencia
         return $this->db->single();
     }
 
-    public function obtenerPorEmpleadoYFecha($empleadoId, $fecha)
+    public function obtenerPorEmpleadoYFecha($empleado_id, $fecha)
     {
-        $this->db->query("SELECT * FROM asistencias WHERE id_empleado = :id_empleado AND DATE(entrada) = :fecha LIMIT 1");
-        $this->db->bind(':id_empleado', $empleadoId);
+        $this->db->query("SELECT * FROM asistencias WHERE id_empleado = :id_empleado AND DATE(entrada) = :fecha");
+        $this->db->bind(':id_empleado', $empleado_id);
         $this->db->bind(':fecha', $fecha);
         return $this->db->single();
     }
