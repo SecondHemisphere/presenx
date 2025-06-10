@@ -1,6 +1,14 @@
 <div class="auth-contenedor">
     <h2 class="auth-titulo">Crear Cuenta</h2>
 
+    <!-- Mensaje de éxito -->
+    <?php if (isset($_SESSION['exito'])): ?>
+        <div class="auth-mensaje auth-exito">
+            <?= $_SESSION['exito'];
+            unset($_SESSION['exito']); ?>
+        </div>
+    <?php endif; ?>
+    
     <!-- Formulario de registro -->
     <form action="/auth/register" method="POST" class="auth-formulario" novalidate>
         <div class="auth-grupo <?= isset($errores['nombre']) ? 'error-input' : '' ?>">
@@ -23,17 +31,17 @@
 
         <div class="auth-grupo <?= isset($errores['password']) ? 'error-input' : '' ?>">
             <label for="password">Contraseña*</label>
-            <input type="password" id="password" name="password" placeholder="Mínimo 8 caracteres" required minlength="8">
+            <input type="password" id="password" name="password" placeholder="Mínimo 8 caracteres" required>
             <?php if (isset($errores['password'])): ?>
                 <span class="error"><?= htmlspecialchars($errores['password']) ?></span>
             <?php endif; ?>
         </div>
 
-        <div class="auth-grupo <?= isset($errores['confirm_password']) ? 'error-input' : '' ?>">
-            <label for="confirm_password">Confirmar contraseña*</label>
-            <input type="password" id="confirm_password" name="confirm_password" placeholder="Repite tu contraseña" required minlength="8">
-            <?php if (isset($errores['confirm_password'])): ?>
-                <span class="error"><?= htmlspecialchars($errores['confirm_password']) ?></span>
+        <div class="auth-grupo <?= isset($errores['password_confirm']) ? 'error-input' : '' ?>">
+            <label for="password_confirm">Confirmar contraseña*</label>
+            <input type="password" id="password_confirm" name="password_confirm" placeholder="Repite tu contraseña" required>
+            <?php if (isset($errores['password_confirm'])): ?>
+                <span class="error"><?= htmlspecialchars($errores['password_confirm']) ?></span>
             <?php endif; ?>
         </div>
 
