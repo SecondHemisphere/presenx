@@ -8,17 +8,21 @@
     </div>
 
     <form action="/usuarios/actualizar-cuenta" method="POST" novalidate>
-        <label for="nombre">Nombre completo*</label>
-        <input type="text" id="nombre" name="nombre" required maxlength="150" value="<?= htmlspecialchars($usuario->nombre ?? '') ?>">
-        <?php if (isset($errores['nombre'])): ?>
-            <span class="error"><?= $errores['nombre'] ?></span>
-        <?php endif; ?>
+        <div class="campo-formulario">
+            <label for="nombre">Nombre completo*</label>
+            <input type="text" id="nombre" name="nombre" required maxlength="150" value="<?= htmlspecialchars($usuario->nombre ?? '') ?>">
+            <?php if (isset($errores['nombre'])): ?>
+                <span class="error"><?= $errores['nombre'] ?></span>
+            <?php endif; ?>
+        </div>
 
-        <label for="email">Correo electrónico*</label>
-        <input type="email" id="email" name="email" required maxlength="100" value="<?= htmlspecialchars($usuario->email ?? '') ?>">
-        <?php if (isset($errores['email'])): ?>
-            <span class="error"><?= $errores['email'] ?></span>
-        <?php endif; ?>
+        <div class="campo-formulario">
+            <label for="email">Correo electrónico*</label>
+            <input type="email" id="email" name="email" required maxlength="100" value="<?= htmlspecialchars($usuario->email ?? '') ?>">
+            <?php if (isset($errores['email'])): ?>
+                <span class="error"><?= $errores['email'] ?></span>
+            <?php endif; ?>
+        </div>
 
         <div class="contenedor-botones">
             <a href="/usuarios/cambiar-contrasena" class="link-cambiar-contrasena">
