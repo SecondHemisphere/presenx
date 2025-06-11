@@ -2,7 +2,7 @@
 class DashboardController
 {
     private $db;
-    private $userModel;
+    private $usuarioModel;
     private $cargoModel;
     private $empleadoModel;
     private $asistenciaModel;
@@ -14,12 +14,12 @@ class DashboardController
         }
 
         $this->db = $db;
-        $this->userModel = new Usuario($db);
+        $this->usuarioModel = new Usuario($db);
         $this->cargoModel = new Cargo($db);
         $this->empleadoModel = new Empleado($db);
         $this->asistenciaModel = new Asistencia($db);
 
-        if (!$this->isLoggedIn()) {
+        if (!$this->estaLogueado()) {
             header('Location: /login');
             exit;
         }
@@ -27,7 +27,7 @@ class DashboardController
 
     public function index()
     {
-        $user = $this->userModel->obtenerPorId($_SESSION['user_id']);
+        $usuario = $this->usuarioModel->obtenerPorId($_SESSION['user_id']);
 
         $total_empleados = $this->empleadoModel->obtenerTotal();
         $asistencias_hoy = $this->asistenciaModel->contarDeHoy();
@@ -38,10 +38,10 @@ class DashboardController
             $porcentaje = min($porcentaje, 100);
         }
 
-        $data = [
+        $datos = [
             'title' => 'Dashboard',
-            'user' => $user,
-            'total_usuarios' => $this->userModel->obtenerTotal(),
+            'user' => $usuario,
+            'total_usuarios' => $this->usuarioModel->obtenerTotal(),
             'total_cargos' => $this->cargoModel->obtenerTotal(),
             'total_empleados' => $total_empleados,
             'porcentaje' => $porcentaje,
@@ -51,15 +51,14 @@ class DashboardController
             'ultimasEntradas' => $this->asistenciaModel->ultimasEntradas()
         ];
 
-        $current_page = 'dashboard';
+        $pagina_actual = 'dashboard';
 
-        $view = 'admin/dashboard/index.php';
+        $vista = 'admin/dashboard/index.php';
 
         require_once __DIR__ . '/../views/include/layout.php';
     }
 
-
-    private function isLoggedIn()
+    private function estaLogueado()
     {
         return isset($_SESSION['user_id']);
     }
