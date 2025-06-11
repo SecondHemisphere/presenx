@@ -55,7 +55,10 @@ $prefijosRutasAdmin = [
     '/asistencias/delete/',
     '/usuarios/edit/',
     '/usuarios/update/',
-    '/usuarios/delete/'
+    '/usuarios/delete/',
+    '/usuarios/mi-cuenta',
+    '/usuarios/actualizar-cuenta',
+    '/usuarios/cambiar-contrasena',
 ];
 
 // Mapeo de rutas estáticas a controladores y métodos
@@ -68,10 +71,6 @@ $mapaRutas = [
     '/auth/login' => ['AutenticacionController', 'login'],
     '/auth/register' => ['AutenticacionController', 'register'],
     '/logout' => ['AutenticacionController', 'logout'],
-
-    '/cuenta' => ['AutenticacionController', 'index'],
-    '/cuenta/actualizar' => ['AutenticacionController', 'actualizar'],
-    '/cuenta/cambiar-contrasena' => ['AutenticacionController', 'cambiarContrasena'],
 
     '/dashboard' => ['DashboardController', 'index'],
 
@@ -90,6 +89,10 @@ $mapaRutas = [
     '/usuarios' => ['UsuarioController', 'index'],
     '/usuarios/create' => ['UsuarioController', 'create'],
     '/usuarios/store' => ['UsuarioController', 'store'],
+
+    '/usuarios/mi-cuenta' => ['UsuarioController', 'miCuenta'],
+    '/usuarios/actualizar-cuenta' => ['UsuarioController', 'actualizarCuenta'],
+    '/usuarios/cambiar-contrasena' => ['UsuarioController', 'cambiarContrasena'],
 
     '/empresa/configuracion' => ['EmpresaController', 'configuracion'],
 ];

@@ -76,7 +76,6 @@ class Usuario
             return ['exito' => false, 'errores' => $validacion];
         }
 
-        // Verificar nombre y email duplicados en otros registros
         if ($this->existePorNombre($datos['nombre'], $id)) {
             return ['exito' => false, 'errores' => ['nombre' => 'Ya existe otro usuario con ese nombre.']];
         }
@@ -85,11 +84,14 @@ class Usuario
             return ['exito' => false, 'errores' => ['email' => 'Ya existe otro usuario con ese correo.']];
         }
 
+        $rol = $datos['rol'] ?? $usuario->rol;
+        $estado = $datos['estado'] ?? $usuario->estado;
+
         $this->db->query('UPDATE usuarios SET nombre = :nombre, email = :email, rol = :rol, estado = :estado WHERE id = :id');
         $this->db->bind(':nombre', $datos['nombre']);
         $this->db->bind(':email', $datos['email']);
-        $this->db->bind(':rol', $datos['rol']);
-        $this->db->bind(':estado', $datos['estado']);
+        $this->db->bind(':rol', $rol);
+        $this->db->bind(':estado', $estado);
         $this->db->bind(':id', $id);
 
         $exito = $this->db->execute();

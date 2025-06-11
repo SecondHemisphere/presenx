@@ -8,13 +8,9 @@
             <span>Presenx</span>
         </div>
         <div class="nav-links">
-            <a href="/mi-cuenta">
+            <a href="/usuarios/mi-cuenta">
                 <i class="fas fa-user"></i>
                 Mi Cuenta
-            </a>
-            <a href="/dashboard">
-                <i class="fas fa-house"></i>
-                Inicio
             </a>
             <a href="/logout" class="logout-item">
                 Cerrar Sesión

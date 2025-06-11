@@ -152,6 +152,106 @@ class UsuarioController
         exit;
     }
 
+    // Mostrar la cuenta del usuario autenticado
+    public function miCuenta()
+    {
+        $usuario = $this->usuarioModel->obtenerPorId($_SESSION['user_id']);
+
+        if (!$usuario) {
+            $_SESSION['mensaje_error'] = 'No se pudo cargar tu cuenta.';
+            header('Location: /');
+            exit;
+        }
+
+        $datos = [
+            'titulo' => 'Mi Cuenta',
+            'usuario' => $usuario,
+            'errores' => [],
+            'accion_formulario' => '/usuarios/actualizar-cuenta',
+            'pagina_actual' => 'mi-cuenta',
+        ];
+
+        $vista = 'admin/usuarios/mi_cuenta.php';
+        require_once __DIR__ . '/../views/include/layout.php';
+    }
+
+    // Actualizar datos personales del usuario autenticado
+    public function actualizarCuenta()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $entrada = [
+                'nombre' => trim($_POST['nombre']),
+                'email' => trim($_POST['email']),
+            ];
+
+            $resultado = $this->usuarioModel->actualizar($_SESSION['user_id'], $entrada);
+
+            $usuarioActualizado = (object) array_merge(
+                (array) $this->usuarioModel->obtenerPorId($_SESSION['user_id']),
+                $entrada
+            );
+
+            $datos = [
+                'titulo' => 'Mi Cuenta',
+                'usuario' => $usuarioActualizado,
+                'errores' => $resultado['errores'] ?? [],
+                'accion_formulario' => '/usuarios/actualizar-cuenta',
+                'mensaje_exito' => $resultado['exito'] ? 'Tu cuenta ha sido actualizada.' : null,
+                'pagina_actual' => 'mi-cuenta'
+            ];
+
+            $vista = 'admin/usuarios/mi_cuenta.php';
+            require_once __DIR__ . '/../views/include/layout.php';
+        }
+    }
+
+    // Cambiar contraseña del usuario autenticado
+    public function cambiarContrasena()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $actual = $_POST['contrasena_actual'] ?? '';
+            $nueva = $_POST['nueva_contrasena'] ?? '';
+            $confirmacion = $_POST['confirmar_contrasena'] ?? '';
+
+            $errores = [];
+
+            if (empty($actual) || empty($nueva) || empty($confirmacion)) {
+                $errores[] = 'Todos los campos son obligatorios.';
+            }
+
+            if ($nueva !== $confirmacion) {
+                $errores[] = 'La nueva contraseña y su confirmación no coinciden.';
+            }
+
+            $usuario = $this->usuarioModel->obtenerPorId($_SESSION['user_id']);
+
+            if (!$usuario || !password_verify($actual, $usuario->password)) {
+                $errores[] = 'La contraseña actual es incorrecta.';
+            }
+
+            if (empty($errores)) {
+                $resultado = $this->usuarioModel->actualizarPassword($_SESSION['user_id'], $nueva);
+
+                if ($resultado) {
+                    $_SESSION['mensaje_exito'] = 'Contraseña cambiada con éxito.';
+                    header('Location: /usuarios/mi-cuenta');
+                    exit;
+                } else {
+                    $errores[] = 'No se pudo cambiar la contraseña. Intenta de nuevo.';
+                }
+            }
+
+            $datos = [
+                'titulo' => 'Cambiar Contraseña',
+                'errores' => $errores,
+                'pagina_actual' => 'mi-cuenta'
+            ];
+
+            $vista = 'admin/usuarios/cambiar_contrasena.php';
+            require_once __DIR__ . '/../views/include/layout.php';
+        }
+    }
+
     private function estaLogueado()
     {
         return isset($_SESSION['user_id']);

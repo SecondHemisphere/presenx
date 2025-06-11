@@ -1,0 +1,78 @@
+.contenedor-mi-cuenta {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 14px;
+}
+
+.contenedor-mi-cuenta .encabezado-configuracion h2 {
+  font-size: 2rem;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+.contenedor-mi-cuenta .encabezado-configuracion .subtitulo {
+  font-size: 1.6rem;
+  color: #7f8c8d;
+}
+
+.contenedor-mi-cuenta hr {
+  border: none;
+  border-top: 0.2rem solid #ddd;
+  margin-bottom: 2rem;
+  margin-top: 0.3rem;
+}
+
+.contenedor-mi-cuenta form label {
+  font-weight: 600;
+  font-size: 1.6rem;
+}
+
+.contenedor-mi-cuenta form input {
+  padding: 0.6rem;
+  border: 1px solid #bbb;
+  border-radius: 8px;
+  width: 100%;
+  margin-top: 0.3rem;
+  margin-bottom: 1rem;
+}
+
+.contenedor-mi-cuenta form input:focus {
+  border-color: #2980b9;
+  outline: none;
+}
+
+.contenedor-mi-cuenta .error {
+  color: #d9534f;
+  font-size: 1.4rem;
+  display: block;
+  margin-top: 0.3rem;
+  margin-bottom: 0.6rem;
+}
+
+.contenedor-mi-cuenta .contenedor-botones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.contenedor-mi-cuenta .boton {
+  padding: 0.7rem 1.4rem;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  color: white;
+}
+
+.contenedor-mi-cuenta .boton-guardar {
+  background-color: var(--color-secundario, #2980b9);
+}
+
+.contenedor-mi-cuenta .boton-guardar:hover {
+  background-color: #1f618d;
+}
