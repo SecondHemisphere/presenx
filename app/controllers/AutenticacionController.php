@@ -68,6 +68,7 @@ class AutenticacionController
                 } elseif (!password_verify($password, $userRecord->password)) {
                     $errores['password'] = 'Contraseña incorrecta.';
                 } elseif ($userRecord->estado !== 'activo') {
+                    $_SESSION['mensaje_error'] = 'Usuario inactivo, contacte al administrador.';
                     $errores['general'] = 'Usuario inactivo, contacte al administrador.';
                 }
             }
@@ -127,8 +128,8 @@ class AutenticacionController
 
             if (empty($entrada['password'])) {
                 $errores['password'] = 'La contraseña es obligatoria.';
-            } elseif (strlen($entrada['password']) < 6) {
-                $errores['password'] = 'La contraseña debe tener al menos 6 caracteres.';
+            } elseif (strlen($entrada['password']) < 8) {
+                $errores['password'] = 'La contraseña debe tener al menos 8 caracteres.';
             }
 
             if ($entrada['password'] !== $entrada['password_confirm']) {

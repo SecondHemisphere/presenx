@@ -2,10 +2,18 @@
     <h2 class="auth-titulo">Iniciar Sesión</h2>
 
     <!-- Mensaje de éxito -->
-    <?php if (isset($_SESSION['exito'])): ?>
+    <?php if (isset($_SESSION['mensaje_exito'])): ?>
         <div class="auth-mensaje auth-exito">
-            <?= $_SESSION['exito'];
-            unset($_SESSION['exito']); ?>
+            <?= $_SESSION['mensaje_exito'];
+            unset($_SESSION['mensaje_exito']); ?>
+        </div>
+    <?php endif; ?>
+
+    <!-- Mensaje de error-->
+    <?php if (isset($_SESSION['mensaje_error'])): ?>
+        <div class="auth-mensaje auth-error">
+            <?= $_SESSION['mensaje_error'];
+            unset($_SESSION['mensaje_error']); ?>
         </div>
     <?php endif; ?>
 

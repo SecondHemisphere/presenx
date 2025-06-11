@@ -54,7 +54,7 @@ class Usuario
         $this->db->bind(':nombre', $datos['nombre']);
         $this->db->bind(':email', $datos['email']);
         $this->db->bind(':password', password_hash($datos['password'], PASSWORD_DEFAULT));
-        $this->db->bind(':rol', $datos['rol'] ?? 'Usuario');
+        $this->db->bind(':rol', $datos['rol'] ?? 'Administrador');
         $this->db->bind(':estado', 'activo');
 
         $exito = $this->db->execute();
