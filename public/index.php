@@ -69,6 +69,10 @@ $mapaRutas = [
     '/auth/register' => ['AutenticacionController', 'register'],
     '/logout' => ['AutenticacionController', 'logout'],
 
+    '/cuenta' => ['AutenticacionController', 'index'],
+    '/cuenta/actualizar' => ['AutenticacionController', 'actualizar'],
+    '/cuenta/cambiar-contrasena' => ['AutenticacionController', 'cambiarContrasena'],
+
     '/dashboard' => ['DashboardController', 'index'],
 
     '/cargos' => ['CargoController', 'index'],
@@ -88,10 +92,6 @@ $mapaRutas = [
     '/usuarios/store' => ['UsuarioController', 'store'],
 
     '/empresa/configuracion' => ['EmpresaController', 'configuracion'],
-
-    '/mi-cuenta' => ['MiCuentaController', 'index'],
-    '/mi-cuenta/actualizar' => ['MiCuentaController', 'actualizar'],
-    '/mi-cuenta/cambiar-contrasena' => ['MiCuentaController', 'cambiarContrasena'],
 ];
 
 // Detectar ruta dinámica y extraer parámetros

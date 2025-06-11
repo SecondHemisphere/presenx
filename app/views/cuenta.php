@@ -5,7 +5,7 @@
         <hr>
     </div>
 
-    <form action="/mi-cuenta/actualizar" method="POST" novalidate>
+    <form action="/cuenta/actualizar" method="POST" novalidate>
         <label for="nombre">Nombre completo*</label>
         <input type="text" id="nombre" name="nombre" required maxlength="150" value="<?= htmlspecialchars($usuario->nombre ?? '') ?>">
         <?php if (isset($errores['nombre'])): ?>
@@ -25,7 +25,7 @@
 
     <hr>
 
-    <form action="/mi-cuenta/cambiar-contrasena" method="POST" novalidate>
+    <form action="/cuenta/cambiar-contrasena" method="POST" novalidate>
         <label for="actual_password">Contraseña actual*</label>
         <input type="password" id="actual_password" name="actual_password" required minlength="8">
 
