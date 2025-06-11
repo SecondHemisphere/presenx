@@ -93,6 +93,7 @@ $mapaRutas = [
     '/usuarios/mi-cuenta' => ['UsuarioController', 'miCuenta'],
     '/usuarios/actualizar-cuenta' => ['UsuarioController', 'actualizarCuenta'],
     '/usuarios/cambiar-contrasena' => ['UsuarioController', 'cambiarContrasena'],
+    '/usuarios/actualizar-contrasena' => ['UsuarioController', 'actualizarContrasena'],
 
     '/empresa/configuracion' => ['EmpresaController', 'configuracion'],
 ];

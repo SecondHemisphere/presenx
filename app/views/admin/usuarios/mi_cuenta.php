@@ -3,7 +3,7 @@
 <div class="contenedor-mi-cuenta">
     <div class="encabezado-configuracion">
         <h2>Mi Cuenta</h2>
-        <p class="subtitulo">Administra la información de tu perfil y cambia tu contraseña</p>
+        <p class="subtitulo">Administra la información de tu perfil</p>
         <hr>
     </div>
 
@@ -21,7 +21,12 @@
         <?php endif; ?>
 
         <div class="contenedor-botones">
-            <button type="submit" class="boton boton-guardar"><i class="fas fa-save"></i> Guardar Cambios</button>
+            <a href="/usuarios/cambiar-contrasena" class="link-cambiar-contrasena">
+                ¿Deseas cambiar tu contraseña?
+            </a>
+            <button type="submit" class="boton boton-guardar">
+                <i class="fas fa-save"></i> Guardar Cambios
+            </button>
         </div>
     </form>
 </div>

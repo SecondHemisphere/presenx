@@ -167,7 +167,6 @@ class UsuarioController
             'titulo' => 'Mi Cuenta',
             'usuario' => $usuario,
             'errores' => [],
-            'accion_formulario' => '/usuarios/actualizar-cuenta',
             'pagina_actual' => 'mi-cuenta',
         ];
 
@@ -205,8 +204,30 @@ class UsuarioController
         }
     }
 
-    // Cambiar contraseña del usuario autenticado
+    // Mostrar vista para cambio de contraseña
     public function cambiarContrasena()
+    {
+        $usuario = $this->usuarioModel->obtenerPorId($_SESSION['user_id']);
+
+        if (!$usuario) {
+            $_SESSION['mensaje_error'] = 'No se pudo cargar tu cuenta.';
+            header('Location: /');
+            exit;
+        }
+
+        $datos = [
+            'titulo' => 'Mi Cuenta',
+            'usuario' => $usuario,
+            'errores' => [],
+            'pagina_actual' => 'cambiar-contrasena',
+        ];
+
+        $vista = 'admin/usuarios/cambiar_contrasena.php';
+        require_once __DIR__ . '/../views/include/layout.php';
+    }
+
+    // Actualizar contraseña del usuario autenticado
+    public function actualizarContrasena()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $actual = $_POST['contrasena_actual'] ?? '';

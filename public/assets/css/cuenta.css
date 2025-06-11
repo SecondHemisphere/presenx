@@ -34,6 +34,7 @@
   width: 100%;
   margin-top: 0.3rem;
   margin-bottom: 1rem;
+  font-size: 1.4rem;
 }
 
 .contenedor-mi-cuenta form input:focus {
@@ -51,14 +52,14 @@
 
 .contenedor-mi-cuenta .contenedor-botones {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: 1rem;
   margin-top: 0.5rem;
   margin-bottom: 1rem;
 }
 
 .contenedor-mi-cuenta .boton {
-  padding: 0.7rem 1.4rem;
+  padding: 1rem;
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
@@ -67,6 +68,11 @@
   align-items: center;
   gap: 1rem;
   color: white;
+  font-size: 1.5rem;
+}
+
+.contenedor-mi-cuenta .boton i {
+  font-size: 1.8rem;
 }
 
 .contenedor-mi-cuenta .boton-guardar {
@@ -75,4 +81,11 @@
 
 .contenedor-mi-cuenta .boton-guardar:hover {
   background-color: #1f618d;
+}
+
+.contenedor-mi-cuenta .link-cambiar-contrasena {
+  font-size: 1.6rem;
+  color: #2980b9;
+  text-decoration: underline;
+  align-self: center;
 }
