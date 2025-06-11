@@ -194,7 +194,6 @@ class UsuarioController
                 'titulo' => 'Mi Cuenta',
                 'usuario' => $usuarioActualizado,
                 'errores' => $resultado['errores'] ?? [],
-                'accion_formulario' => '/usuarios/actualizar-cuenta',
                 'mensaje_exito' => $resultado['exito'] ? 'Tu cuenta ha sido actualizada.' : null,
                 'pagina_actual' => 'mi-cuenta'
             ];
@@ -230,41 +229,60 @@ class UsuarioController
     public function actualizarContrasena()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $actual = $_POST['contrasena_actual'] ?? '';
-            $nueva = $_POST['nueva_contrasena'] ?? '';
-            $confirmacion = $_POST['confirmar_contrasena'] ?? '';
+            $actual = trim($_POST['contrasena_actual'] ?? '');
+            $nueva = trim($_POST['nueva_contrasena'] ?? '');
+            $confirmacion = trim($_POST['confirmar_contrasena'] ?? '');
 
-            $errores = [];
+            $errores = [
+                'contrasena_actual' => '',
+                'nueva_contrasena' => '',
+                'confirmar_contrasena' => ''
+            ];
 
-            if (empty($actual) || empty($nueva) || empty($confirmacion)) {
-                $errores[] = 'Todos los campos son obligatorios.';
+            if (empty($actual)) {
+                $errores['contrasena_actual'] = 'La contraseña actual es obligatoria.';
+            }
+
+            if (empty($nueva)) {
+                $errores['nueva_contrasena'] = 'La nueva contraseña es obligatoria.';
+            }
+
+            if (empty($confirmacion)) {
+                $errores['confirmar_contrasena'] = 'La confirmación de la nueva contraseña es obligatoria.';
             }
 
             if ($nueva !== $confirmacion) {
-                $errores[] = 'La nueva contraseña y su confirmación no coinciden.';
+                $errores['confirmar_contrasena'] = 'La nueva contraseña y su confirmación no coinciden.';
             }
 
             $usuario = $this->usuarioModel->obtenerPorId($_SESSION['user_id']);
 
             if (!$usuario || !password_verify($actual, $usuario->password)) {
-                $errores[] = 'La contraseña actual es incorrecta.';
+                $errores['contrasena_actual'] = 'La contraseña actual es incorrecta.';
             }
+
+            $errores = array_filter($errores);
+
+            $mensaje_exito = null;
 
             if (empty($errores)) {
                 $resultado = $this->usuarioModel->actualizarPassword($_SESSION['user_id'], $nueva);
 
                 if ($resultado) {
-                    $_SESSION['mensaje_exito'] = 'Contraseña cambiada con éxito.';
-                    header('Location: /usuarios/mi-cuenta');
-                    exit;
+                    $mensaje_exito = 'Contraseña cambiada con éxito.';
+                    $errores = [];
                 } else {
-                    $errores[] = 'No se pudo cambiar la contraseña. Intenta de nuevo.';
+                    $errores['general'] = 'No se pudo cambiar la contraseña. Intenta de nuevo.';
                 }
             }
 
+            $usuarioActualizado = $this->usuarioModel->obtenerPorId($_SESSION['user_id']);
+
             $datos = [
                 'titulo' => 'Cambiar Contraseña',
+                'usuario' => $usuarioActualizado,
                 'errores' => $errores,
+                'mensaje_exito' => $mensaje_exito,
                 'pagina_actual' => 'mi-cuenta'
             ];
 

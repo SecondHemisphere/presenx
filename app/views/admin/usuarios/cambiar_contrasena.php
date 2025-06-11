@@ -7,23 +7,23 @@
         <hr>
     </div>
 
-    <form action="/usuarios/cambiar-contrasena" method="POST" novalidate>
-        <label for="actual_password">Contraseña actual*</label>
-        <input type="password" id="actual_password" name="actual_password" required minlength="8">
-        <?php if (isset($errores['actual_password'])): ?>
-            <span class="error"><?= $errores['actual_password'] ?></span>
+    <form action="/usuarios/actualizar-contrasena" method="POST" novalidate>
+        <label for="contrasena_actual">Contraseña actual*</label>
+        <input type="password" id="contrasena_actual" name="contrasena_actual" required minlength="8">
+        <?php if (!empty($errores['contrasena_actual'])): ?>
+            <span class="error"><?= htmlspecialchars($errores['contrasena_actual']) ?></span>
         <?php endif; ?>
 
-        <label for="nueva_password">Nueva contraseña*</label>
-        <input type="password" id="nueva_password" name="nueva_password" required minlength="8">
-        <?php if (isset($errores['nueva_password'])): ?>
-            <span class="error"><?= $errores['nueva_password'] ?></span>
+        <label for="nueva_contrasena">Nueva contraseña*</label>
+        <input type="password" id="nueva_contrasena" name="nueva_contrasena" required minlength="8">
+        <?php if (!empty($errores['nueva_contrasena'])): ?>
+            <span class="error"><?= htmlspecialchars($errores['nueva_contrasena']) ?></span>
         <?php endif; ?>
 
-        <label for="confirmar_password">Confirmar nueva contraseña*</label>
-        <input type="password" id="confirmar_password" name="confirmar_password" required minlength="8">
-        <?php if (isset($errores['confirmar_password'])): ?>
-            <span class="error"><?= $errores['confirmar_password'] ?></span>
+        <label for="confirmar_contrasena">Confirmar nueva contraseña*</label>
+        <input type="password" id="confirmar_contrasena" name="confirmar_contrasena" required minlength="8">
+        <?php if (!empty($errores['confirmar_contrasena'])): ?>
+            <span class="error"><?= htmlspecialchars($errores['confirmar_contrasena']) ?></span>
         <?php endif; ?>
 
         <div class="contenedor-botones">
