@@ -10,7 +10,7 @@ class CargoController
         $this->db = $db;
         $this->cargoModel = new Cargo($db);
 
-        if (!$this->isLoggedIn()) {
+        if (!$this->estaLogueado()) {
             header('Location: /login');
             exit;
         }
@@ -21,18 +21,18 @@ class CargoController
     {
         $cargos = $this->cargoModel->obtenerTodos();
 
-        $data = [
-            'title' => 'Listado de Cargos',
+        $datos = [
+            'titulo' => 'Listado de Cargos',
             'cargos' => $cargos,
-            'success_message' => $_SESSION['success_message'] ?? null,
-            'error_message' => $_SESSION['error_message'] ?? null,
-            'current_page' => 'cargos'
+            'mensaje_exito' => $_SESSION['mensaje_exito'] ?? null,
+            'mensaje_error' => $_SESSION['mensaje_error'] ?? null,
+            'pagina_actual' => 'cargos'
         ];
 
         unset($_SESSION['success_message']);
         unset($_SESSION['error_message']);
 
-        $view = 'admin/cargos/index.php';
+        $vista = 'admin/cargos/index.php';
         require_once __DIR__ . '/../views/include/layout.php';
     }
 
@@ -138,7 +138,7 @@ class CargoController
     // Elimina un cargo
     public function delete($id)
     {
-        $_SESSION['success_message'] = $this->cargoModel->eliminar($id)
+        $_SESSION['mensaje_exito'] = $this->cargoModel->eliminar($id)
             ? 'Cargo eliminado correctamente'
             : 'Error al eliminar el cargo';
 
@@ -147,7 +147,7 @@ class CargoController
     }
 
     // Verifica si el usuario está autenticado
-    private function isLoggedIn()
+    private function estaLogueado()
     {
         return isset($_SESSION['user_id']);
     }
